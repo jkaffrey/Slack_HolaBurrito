@@ -33,13 +33,15 @@ slack.on('reaction_added', 'message', payload => {
 	  slack.send(REQUEST_URL, { text: 'Hello you gave a burrito to ' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
+  } else if (payload.event.text.indexOf(':burrito:') > 0) {
+	  
+	  var userGivenBurrito = payload.event.text.match(/<(.*)>/));
+	  console.log(userGivenBurrito);
+	  
+	  slack.send(REQUEST_URL, { text: 'Hello you gave a burrito to <' + userGivenBurrito + '>' }).then(res => {
+		  console.log( 'Successfully answered the command' );
+	  }).catch(console.error);
   }
-  
-  // save the message and update the timestamp
-  // slack.send(message).then(res => {
-    //let {ts, channel} = res.data;
-    //users[user] = Object.assign({}, message, { ts: ts, channel: channel });
-  // });
 });
 
 
