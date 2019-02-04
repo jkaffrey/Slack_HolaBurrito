@@ -27,9 +27,9 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
 		  text: 'You gave <@' + payload.event.user + '> a burrito'
 	  }
 	  
-	  //slack.send(response_url, { channel : payload.event.user, text: 'Hello you gave a burrito', [] }).then( () => {
-	//	  console.log( 'Successfully answered the command' );
-	  // }).catch( console.error );
+	  slack.send('https://slack.com/api/chat.postMessage', { channel : payload.event.user, text: 'Hello you gave a burrito', [] }).then( () => {
+		  console.log( 'Successfully answered the command' );
+	  }).catch( console.error );
   }
   
   // save the message and update the timestamp
