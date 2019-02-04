@@ -20,11 +20,13 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   if (payload.event.reaction === 'burrito') {
 	  var message = {
 		  unfurl_links: true,
-		  channel: payload.event.user,
+		  channel: payload.event.item.channel,
 		  token: TOKEN,
 		  text: 'You gave <@' + payload.event.user + '> a burrito'
 	  }
-	  slack.send(message);
+	  slack.send(message).then(data => {
+		console.log('I did eet');  
+	  });
   }
   
   // save the message and update the timestamp
