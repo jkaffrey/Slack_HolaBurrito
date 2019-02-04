@@ -17,16 +17,16 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   console.log("Testing against");
   console.log(payload.event);
   
-  if (payload.event.reaction === 'burrito') {
+  if (payload.event.item.reaction === 'burrito') {
 	  var message = {
-		  unfurl_links: true,
 		  channel: payload.event.item.channel,
 		  token: TOKEN,
 		  text: 'You gave <@' + payload.event.user + '> a burrito'
 	  }
-	  slack.send(message).then(data => {
-		console.log('I did eet');  
-	  });
+	  
+	  slack.send(response_url, { channel : payload.event.user, text: 'Hello you gave a burrito', [] }).then( () => {
+		  console.log( 'Successfully answered the command' );
+	  }).catch( console.error );
   }
   
   // save the message and update the timestamp
