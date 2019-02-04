@@ -14,6 +14,9 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   //let {type, user, item} = payload.event;
   //let message = 'Hello';
   
+  console.log(payload.response_url);
+  console.log(payload.event.response_url);
+  
   console.log("Testing against");
   console.log(payload);
   
