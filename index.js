@@ -10,10 +10,11 @@ const ts = require('tinyspeck'),
 let slack = ts.instance({ token: TOKEN });
 
 // event handler
-slack.on('star_added', payload => {
+slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   let {type, user, item} = payload.event;
   let message = 'Hello';
   
+  console.log("Testing against");
   console.log(payload);
   
   // save the message and update the timestamp
