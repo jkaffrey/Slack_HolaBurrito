@@ -15,7 +15,7 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   //let message = 'Hello';
   
   console.log("Testing against");
-  console.log(payload.event);
+  console.log(payload);
   
   if (payload.event.item.reaction === 'burrito') {
 	  var message = {
@@ -24,9 +24,9 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
 		  text: 'You gave <@' + payload.event.user + '> a burrito'
 	  }
 	  
-	  slack.send(response_url, { channel : payload.event.user, text: 'Hello you gave a burrito', [] }).then( () => {
-		  console.log( 'Successfully answered the command' );
-	  }).catch( console.error );
+	  //slack.send(response_url, { channel : payload.event.user, text: 'Hello you gave a burrito', [] }).then( () => {
+	//	  console.log( 'Successfully answered the command' );
+	  // }).catch( console.error );
   }
   
   // save the message and update the timestamp
