@@ -11,13 +11,14 @@ const ts = require('tinyspeck'),
 let slack = ts.instance({ token: TOKEN });
 
 // event handler
-//'reaction_added', 'message_groups', 'message.channels'
-slack.on('*', payload => {
+//'reaction_added', 'message', 'message.channels'
+slack.on('reaction_added', 'message', payload => {
   //let {type, user, item} = payload.event;
   //let message = 'Hello';
   
   console.log("Testing against");
   console.log(payload.event.type);
+  console.log(payload);
   
   if (payload.event.reaction === 'burrito') {
 	  
