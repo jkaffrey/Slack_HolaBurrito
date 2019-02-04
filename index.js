@@ -2,6 +2,7 @@ require('dotenv').config();
 const ts = require('tinyspeck'),
       PORT = process.env.PORT || 8080,
 	  TOKEN = process.env.TOKEN,
+	  REQUEST_URL =  process.env.REQUEST_URL,
       users = {};
 
 	  console.log(TOKEN);
@@ -10,12 +11,12 @@ const ts = require('tinyspeck'),
 let slack = ts.instance({ token: TOKEN });
 
 // event handler
-slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
+slack.on('reaction_added', 'message_groups', 'message.channels', payload => {
   //let {type, user, item} = payload.event;
   //let message = 'Hello';
   
   console.log("Testing against");
-  console.log(payload.event.reaction);
+  console.log(payload.event.type);
   
   if (payload.event.reaction === 'burrito') {
 	  
@@ -27,7 +28,7 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
 		  text: 'You gave <@' + payload.event.user + '> a burrito'
 	  }
 	  
-	  slack.send('https://hooks.slack.com/services/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', { channel : payload.event.user, text: 'Hello you gave a burrito' }).then(res => {
+	  slack.send(REQUEST_URL, { text: 'Hello you gave a burrito to ' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
