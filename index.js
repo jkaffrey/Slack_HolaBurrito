@@ -15,9 +15,11 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   //let message = 'Hello';
   
   console.log("Testing against");
-  console.log(payload);
+  // console.log(payload);
+  console.log(payload.event.item.reaction);
+  console.log(payload.event.reaction);
   
-  if (payload.event.item.reaction === 'burrito') {
+  if (payload.event.reaction === 'burrito') {
 	  
 	  console.log('inside');
 	  
