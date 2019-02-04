@@ -11,7 +11,8 @@ const ts = require('tinyspeck'),
 let slack = ts.instance({ token: TOKEN });
 
 // event handler
-slack.on('reaction_added', 'message_groups', 'message.channels', payload => {
+//'reaction_added', 'message_groups', 'message.channels'
+slack.on('*', payload => {
   //let {type, user, item} = payload.event;
   //let message = 'Hello';
   
