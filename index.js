@@ -35,7 +35,7 @@ slack.on('reaction_added', 'message', payload => {
 	  }).catch(console.error);
   } else if (payload.event.text.indexOf(':burrito:') > 0) {
 	  
-	  var userGivenBurrito = payload.event.text.match(/<(.*)>/));
+	  var userGivenBurrito = payload.event.text.match(/<(.*)>/);
 	  console.log(userGivenBurrito);
 	  
 	  slack.send(REQUEST_URL, { text: 'Hello you gave a burrito to <' + userGivenBurrito + '>' }).then(res => {
