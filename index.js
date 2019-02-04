@@ -15,8 +15,6 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
   //let message = 'Hello';
   
   console.log("Testing against");
-  // console.log(payload);
-  console.log(payload.event.item.reaction);
   console.log(payload.event.reaction);
   
   if (payload.event.reaction === 'burrito') {
@@ -29,7 +27,7 @@ slack.on('reaction_added', 'message.groups', 'message.channels', payload => {
 		  text: 'You gave <@' + payload.event.user + '> a burrito'
 	  }
 	  
-	  slack.send('https://slack.com/api/chat.postMessage', { channel : payload.event.user, text: 'Hello you gave a burrito' }).then(res => {
+	  slack.send('https://hooks.slack.com/services/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', { channel : payload.event.user, text: 'Hello you gave a burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
