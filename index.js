@@ -138,7 +138,7 @@ slack.on('message', payload => {
 		  
 		  burritoGiven(payload.event.user, userGivenBurrito, burritosGiven);
 		  
-		  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to @' + userGivenBurrito + '. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+		  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 			  //console.log( 'Successfully answered the command' );
 		  }).catch(console.error);
 		  
