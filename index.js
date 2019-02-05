@@ -99,10 +99,21 @@ function getAllUsersInStr(str) {
 	return outputUsers;
 }
 
-function epochToJsDate(ts){
+function isFileOlderThan12Hrs(user) {
 	
-    return new Date(ts*1000);
- }
+	var givenFileName = user + '_given.txt';
+	fs.stat(givenFileName, function(err, stat) {
+      var endTime, now;
+      if (err) {
+        return console.error(err);
+      }
+      now = new Date().getTime();
+      endTime = new Date(stat.ctime).getTime() + 60000;
+      if (now > endTime) {
+		  fs.unlinkSync(givenFileName);
+	  }
+	});
+}
 
 slack.on('message', payload => {
   
