@@ -1,6 +1,7 @@
 require('dotenv').config();
 const ts = require('tinyspeck'),
       PORT = process.env.PORT || 8080,
+	  BOT_TOKEN = process.env.BOT_TOKEN,
 	  TOKEN = process.env.TOKEN,
 	  REQUEST_URL =  process.env.REQUEST_URL,
       users = {};
@@ -38,7 +39,7 @@ slack.on('reaction_added', 'message', payload => {
 	  var userGivenBurrito = payload.event.text.match(/<(.*)>/);
 	  console.log(userGivenBurrito);
 	  
-	  slack.send(REQUEST_URL, { token: TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], as_user: false, channel: payload.event.user }).then(res => {
+	  slack.send(REQUEST_URL, { token: BOT_TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], as_user: false, channel: payload.event.user }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
