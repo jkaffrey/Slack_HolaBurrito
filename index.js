@@ -113,7 +113,8 @@ function isFileOlderThan12Hrs(user) {
         return console.error(err);
       }
       now = new Date().getTime();
-      endTime = new Date(stat.ctime).getTime() + 60000;
+      endTime = new Date(stat.ctime).getTime() + (60 * 1000);
+	  console.log(endTime);
       if (now > endTime) {
 		  console.log('Attempting delete');
 		  fs.unlinkSync(givenFileName);
