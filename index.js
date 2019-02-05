@@ -20,13 +20,13 @@ function burritoGiven(fromUser, toUser) {
 	var recievedFileName = toUser + '_recieved.txt';
 	var hasFile = fs.existsSync(recievedFileName);
 	if (!hasFile) {
-		fs.writeFileSync(recievedFileName, '0');
+		fs.writeFileSync(recievedFileName, '');
 	}
 	
 	var content = fs.readFileSync(recievedFileName, 'utf8');
 	console.log(content);
 	
-	fs.writeFileSync(recievedFileName, '1');
+	fs.writeFileSync(recievedFileName, content + ',' + fromUser);
 	var content = fs.readFileSync(recievedFileName, 'utf8');
 	console.log(content);
 };
