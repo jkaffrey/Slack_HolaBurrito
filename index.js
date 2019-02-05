@@ -37,6 +37,15 @@ function burritoGiven(fromUser, toUser) {
 	fs.writeFileSync(givenFileName, contentGiven + ',' + toUser);
 };
 
+var burritosRemainingPerDay(user) {
+	
+	var givenFileName = user + '_given.txt';
+	var givenBurritos = fs.readFileSync(givenFileName, 'utf8');
+	givenBurritos = (givenTacos.split(",").length - 1);
+	
+	return MAX_BURRITOS_PER_DAY - givenBurritos;
+}
+
 slack.on('message', payload => {
   
   if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
@@ -45,19 +54,24 @@ slack.on('message', payload => {
 	  console.log(userGivenBurrito[1]);
 	  console.log(payload.event.user);
 	  
-	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+	  burritoGiven(payload.event.user, userGivenBurrito[1].replace('@', ''));
+	  
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0] '. You have ' + burritosRemainingPerDay(payload.event.user) ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 	  
 	  slack.send({ token: BOT_TOKEN, text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>', channel: userGivenBurrito[1], as_user: false, username: 'Hola Burrito' }).then(res => {
-		  burritoGiven(payload.event.user, userGivenBurrito[1].replace('@', ''));
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
 });
 
 slack.on('/burritostats', payload => {
-	console.log(payload);
+	
+	var requester = payload.user_id;
+	lack.send({ token: BOT_TOKEN, 'You have ' + burritosRemainingPerDay(requester) ' burritos left to give today.', channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {
+		  console.log( 'Successfully answered the command' );
+	  }).catch(console.error);
 });
 
 
