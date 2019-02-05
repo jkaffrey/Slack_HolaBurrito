@@ -56,7 +56,7 @@ slack.on('message', payload => {
 	  
 	  burritoGiven(payload.event.user, userGivenBurrito[1].replace('@', ''));
 	  
-	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0] '. You have ' + burritosRemainingPerDay(payload.event.user) ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0] '. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 	  
