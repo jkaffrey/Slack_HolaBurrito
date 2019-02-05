@@ -23,7 +23,7 @@ function burritoGiven(fromUser, toUser) {
 		fs.writeFileSync(recievedFileName, '0');
 	}
 	
-	var content = fs.readFileSync(recievedFileName);
+	var content = fs.readFileSync(recievedFileName, 'utf8');
 	console.log(content);
 };
 
@@ -35,7 +35,7 @@ slack.on('message', payload => {
 	  console.log(userGivenBurrito[1]);
 	  console.log(payload.event.user);
 	  
-	  slack.send('chat.postEphemeral', { token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 	  
