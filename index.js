@@ -57,7 +57,7 @@ slack.on('message', payload => {
 });
 
 slack.on('/burritostats', payload => {
-	console.log('Something goes here: ' + payload);
+	console.log(payload);
 });
 
 
