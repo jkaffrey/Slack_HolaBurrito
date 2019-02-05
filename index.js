@@ -110,7 +110,16 @@ function isFileOlderThan6Hrs(user) {
 		return;
 	}
 	
-	fs.stat(givenFileName, function(err, stat) {
+	var stats = fs.fstatSync(givenFileName);
+	var endTime, now;
+	
+	now = new Date().getTime();
+    endTime = new Date(stat.ctime).getTime() + (60 * 1000); // (6 * 60 * 60 * 1000); // 6 hours
+    if (now > endTime) {
+		console.log('Attempting delete');
+		fs.unlinkSync(givenFileName);
+	}
+	/*fs.stat(givenFileName, function(err, stat) {
       var endTime, now;
       if (err) {
         return console.error(err);
@@ -121,7 +130,7 @@ function isFileOlderThan6Hrs(user) {
 		  console.log('Attempting delete');
 		  fs.unlinkSync(givenFileName);
 	  }
-	});
+	});*/
 }
 
 slack.on('message', payload => {
