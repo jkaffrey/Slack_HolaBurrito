@@ -102,6 +102,11 @@ function getAllUsersInStr(str) {
 function isFileOlderThan12Hrs(user) {
 	
 	var givenFileName = user + '_given.txt';
+	var hasFileGiven = fs.existsSync(givenFileName);
+	if (!hasFileGiven) {
+		return;
+	}
+	
 	fs.stat(givenFileName, function(err, stat) {
       var endTime, now;
       if (err) {
