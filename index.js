@@ -99,6 +99,11 @@ function getAllUsersInStr(str) {
 	return outputUsers;
 }
 
+function epochToJsDate(ts){
+	
+    return new Date(ts*1000);
+ }
+
 slack.on('message', payload => {
   
   if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
@@ -108,7 +113,7 @@ slack.on('message', payload => {
 	  // console.log(payload.event.user);
 	  // console.log(getAllUsersInStr(payload.event.text));
 	  
-	  console.log(payload.event.ts);
+	  console.log(epochToJsDate(payload.event.ts));
 	  
 	  var usersGivenBurritos = getAllUsersInStr(payload.event.text);
 	  var burritosGiven = burritosInMention(payload.event.text);
