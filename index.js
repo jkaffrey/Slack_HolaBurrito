@@ -38,7 +38,7 @@ slack.on('reaction_added', 'message', payload => {
 	  var userGivenBurrito = payload.event.text.match(/<(.*)>/);
 	  console.log(userGivenBurrito);
 	  
-	  slack.send(REQUEST_URL, { text: 'Hello you gave a burrito to ' + userGivenBurrito[0] }).then(res => {
+	  slack.send(REQUEST_URL, { token: TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], as_user: false, channel: payload.event.user }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
