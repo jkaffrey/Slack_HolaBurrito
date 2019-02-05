@@ -56,7 +56,7 @@ slack.on('message', payload => {
 	  
 	  burritoGiven(payload.event.user, userGivenBurrito[1].replace('@', ''));
 	  
-	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0] '. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0] + '. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 	  
@@ -69,7 +69,9 @@ slack.on('message', payload => {
 slack.on('/burritostats', payload => {
 	
 	var requester = payload.user_id;
-	lack.send({ token: BOT_TOKEN, 'You have ' + burritosRemainingPerDay(requester) ' burritos left to give today.', channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {
+	var burritosLeft = burritosRemainingPerDay(requester);
+	
+	slack.send({ token: BOT_TOKEN, text: 'You have ' + burritosLeft + ' left to give today.', channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 });
