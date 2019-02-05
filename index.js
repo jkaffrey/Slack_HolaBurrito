@@ -7,7 +7,7 @@ const ts = require('tinyspeck'),
       users = {};
 
 // setting defaults for all Slack API calls
-let slack = ts.instance({ token: TOKEN });
+let slack = ts.instance({ token: BOT_TOKEN });
 
 // event handler
 //'reaction_added', 'message', 'message.channels'
