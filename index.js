@@ -25,6 +25,10 @@ function burritoGiven(fromUser, toUser) {
 	
 	var content = fs.readFileSync(recievedFileName, 'utf8');
 	console.log(content);
+	
+	fs.writeFileSync(recievedFileName, '1');
+	var content = fs.readFileSync(recievedFileName, 'utf8');
+	console.log(content);
 };
 
 slack.on('message', payload => {
