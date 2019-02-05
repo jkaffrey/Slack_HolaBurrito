@@ -37,10 +37,14 @@ slack.on('reaction_added', 'message', payload => {
   } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
 	  
 	  var userGivenBurrito = payload.event.text.match(/<(.*)>/);
-	  console.log(userGivenBurrito[0]);
+	  console.log(userGivenBurrito[1]);
 	  console.log(payload.event.user);
 	  
-	  slack.send({ token: TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user }).then(res => {
+	  slack.send({ token: TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+		  console.log( 'Successfully answered the command' );
+	  }).catch(console.error);
+	  
+	  slack.send({ token: TOKEN, text: 'Hola, you recieved a burrito from ' + payload.event.user, channel: userGivenBurrito[1], as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
