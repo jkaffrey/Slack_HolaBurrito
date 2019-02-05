@@ -65,12 +65,14 @@ slack.on('message', payload => {
 		  slack.send({ token: BOT_TOKEN, text: 'You cannot give yourself a burrito.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 		  }).catch(console.error);
+		  return;
 	  }
 	  
 	  if (burritosRemainingPerDay(payload.event.user) <= 0) {
 		  slack.send({ token: BOT_TOKEN, text: 'You are out of burritos to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 		  }).catch(console.error);
+		  return;
 	  }
 	  
 	  burritoGiven(payload.event.user, userGivenBurrito[1].replace('@', ''));
