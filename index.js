@@ -110,7 +110,7 @@ function isFileOlderThan6Hrs(user) {
 		return;
 	}
 	
-	var stats = fs.statSync(givenFileName);
+	var stat = fs.statSync(givenFileName);
 	var endTime, now;
 	
 	now = new Date().getTime();
