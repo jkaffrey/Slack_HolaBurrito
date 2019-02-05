@@ -16,19 +16,25 @@ let slack = ts.instance({ token: BOT_TOKEN });
 
 function burritoGiven(fromUser, toUser) {
 	
-	console.log('Start');
+	console.log(fromUser + "  " + toUser);
 	var recievedFileName = toUser + '_recieved.txt';
-	var hasFile = fs.existsSync(recievedFileName);
-	if (!hasFile) {
+	var givenFileName = fromUser + '_given.txt';
+	
+	var hasFileRecieved = fs.existsSync(recievedFileName);
+	if (!hasFileRecieved) {
 		fs.writeFileSync(recievedFileName, '');
 	}
 	
-	var content = fs.readFileSync(recievedFileName, 'utf8');
-	console.log(content);
+	var hasFileGiven = fs.existsSync(givenFileName);
+	if (!hasFileGiven) {
+		fs.writeFileSync(givenFileName, '');
+	}
 	
-	fs.writeFileSync(recievedFileName, content + ',' + fromUser);
-	var content = fs.readFileSync(recievedFileName, 'utf8');
-	console.log(content);
+	var contentRecieved = fs.readFileSync(recievedFileName, 'utf8');
+	fs.writeFileSync(recievedFileName, contentRecieved + ',' + fromUser);
+	
+	var contentGiven = fs.readFileSync(givenFileName, 'utf8');
+	fs.writeFileSync(givenFileName, contentGiven + ',' + toUser);
 };
 
 slack.on('message', payload => {
@@ -51,7 +57,7 @@ slack.on('message', payload => {
 });
 
 slack.on('/burritostats', payload => {
-	console.log('Something goes here');
+	console.log('Something goes here: ' + payload);
 });
 
 
