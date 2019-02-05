@@ -48,7 +48,7 @@ function burritosRemainingPerDay(user, inquiry) {
 	}
 	
 	var givenBurritos = fs.readFileSync(givenFileName, 'utf8');
-	givenBurritos = (givenTacos.split(",").length - 1);
+	givenBurritos = (givenBurritos.split(",").length - 1);
 	
 	return MAX_BURRITOS_PER_DAY - givenBurritos;
 }
