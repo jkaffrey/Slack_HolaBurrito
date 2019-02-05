@@ -37,9 +37,16 @@ function burritoGiven(fromUser, toUser) {
 	fs.writeFileSync(givenFileName, contentGiven + ',' + toUser);
 };
 
-function burritosRemainingPerDay(user) {
+function burritosRemainingPerDay(user, inquiry) {
 	
 	var givenFileName = user + '_given.txt';
+	
+	var hasFileGiven = fs.existsSync(givenFileName);
+	if (!hasFileGiven) {
+		fs.writeFileSync(givenFileName, '');
+		return MAX_BURRITOS_PER_DAY;
+	}
+	
 	var givenBurritos = fs.readFileSync(givenFileName, 'utf8');
 	givenBurritos = (givenTacos.split(",").length - 1);
 	
