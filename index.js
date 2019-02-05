@@ -9,7 +9,7 @@ const ts = require('tinyspeck'),
 	  console.log(TOKEN);
 
 // setting defaults for all Slack API calls
-let slack = ts.instance({ token: TOKEN, scope: 'app_home' });
+let slack = ts.instance({ token: BOT_TOKEN });
 
 // event handler
 //'reaction_added', 'message', 'message.channels'
@@ -40,11 +40,11 @@ slack.on('reaction_added', 'message', payload => {
 	  console.log(userGivenBurrito[1]);
 	  console.log(payload.event.user);
 	  
-	  slack.send({ token: BOT_TOKEN, scope: 'app_home', text: 'Hola, you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 	  
-	  slack.send({ token: BOT_TOKEN, scope: 'app_home', text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>', channel: userGivenBurrito[1], as_user: false, username: 'Hola Burrito' }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>', channel: userGivenBurrito[1], as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
