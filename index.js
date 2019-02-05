@@ -88,7 +88,8 @@ function getAllUsersInStr(str) {
 	for (var i = 0; i < arr.length; i++) {
 		
 		var userGivenBurrito = arr[i].match(/<(.*)>/);
-		if (userGivenBurrito[1]) {
+		console.log(userGivenBurrito);
+		if (userGivenBurrito && userGivenBurrito[1]) {
 			
 			outputUsers.push(userGivenBurrito[1]);
 		}
