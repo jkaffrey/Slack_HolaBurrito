@@ -40,7 +40,7 @@ slack.on('reaction_added', 'message', payload => {
 	  console.log(userGivenBurrito[0]);
 	  console.log(payload.event.user);
 	  
-	  slack.send({ token: BOT_TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], channel: userGivenBurrito[0] }).then(res => {
+	  slack.send({ token: TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], channel: payload.event.user }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
