@@ -106,7 +106,10 @@ slack.on('message', payload => {
 	  // var userGivenBurrito = payload.event.text.match(/<(.*)>/);
 	  // console.log(userGivenBurrito[1]);
 	  // console.log(payload.event.user);
-	  console.log(getAllUsersInStr(payload.event.text));
+	  // console.log(getAllUsersInStr(payload.event.text));
+	  
+	  console.log(payload.event.ts);
+	  
 	  var usersGivenBurritos = getAllUsersInStr(payload.event.text);
 	  var burritosGiven = burritosInMention(payload.event.text);
 	  var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
@@ -137,15 +140,15 @@ slack.on('message', payload => {
 		  }
 		  
 		  burritoGiven(payload.event.user, userGivenBurrito, burritosGiven);
-		  
-		  slack.send({ token: BOT_TOKEN, text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
+	  }
+	  
+	   slack.send({ token: BOT_TOKEN, text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {
 			  //console.log( 'Successfully answered the command' );
 		  }).catch(console.error);
 		  
-		  slack.send({ token: BOT_TOKEN, text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + burriotsRecieved(userGivenBurrito) + ' burritos.', channel: '@' + userGivenBurrito, as_user: false, username: 'Hola Burrito' }).then(res => {
-			 // console.log( 'Successfully answered the command' );
-		  }).catch(console.error);
-	  }
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + burriotsRecieved(userGivenBurrito) + ' burritos.', channel: '@' + userGivenBurrito, as_user: false, username: 'Hola Burrito' }).then(res => {
+		 // console.log( 'Successfully answered the command' );
+	  }).catch(console.error);
   }
 });
 
@@ -155,7 +158,7 @@ slack.on('/burritostats', payload => {
 	var burritosLeft = burritosRemainingPerDay(requester);
 	var totalBurritosRecieved = burriotsRecieved(requester);
 	
-	slack.send({ token: BOT_TOKEN, text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved, channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {
+	slack.send({ token: BOT_TOKEN, text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' burrito(s).', channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {
 		  //console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 });
