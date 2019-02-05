@@ -6,10 +6,8 @@ const ts = require('tinyspeck'),
 	  REQUEST_URL =  process.env.REQUEST_URL,
       users = {};
 
-	  console.log(TOKEN);
-
 // setting defaults for all Slack API calls
-let slack = ts.instance({ token: BOT_TOKEN });
+let slack = ts.instance({ token: TOKEN });
 
 // event handler
 //'reaction_added', 'message', 'message.channels'
@@ -48,6 +46,10 @@ slack.on('reaction_added', 'message', payload => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
+});
+
+slack.on('/burritostats', payload => {
+	console.log('Something goes here');
 });
 
 
