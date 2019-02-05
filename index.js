@@ -38,8 +38,9 @@ slack.on('reaction_added', 'message', payload => {
 	  
 	  var userGivenBurrito = payload.event.text.match(/<(.*)>/);
 	  console.log(userGivenBurrito);
+	  console.log(payload.event.user);
 	  
-	  slack.send(REQUEST_URL, { token: BOT_TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], as_user: false, channel: payload.event.user }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hello you gave a burrito to ' + userGivenBurrito[0], channel: userGivenBurrito[0] }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
