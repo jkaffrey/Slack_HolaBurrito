@@ -16,6 +16,9 @@ let slack = ts.instance({ token: BOT_TOKEN });
 
 function burritoGiven(fromUser, toUser, numberGiven) {
 	
+	// Reset the number of burritos you can give.
+	  isFileOlderThan6Hrs(fromUser);
+	
 	for (var i = 0; i < numberGiven; i++) {
 		
 		var recievedFileName = toUser + '_recieved.txt';
@@ -99,7 +102,7 @@ function getAllUsersInStr(str) {
 	return outputUsers;
 }
 
-function isFileOlderThan12Hrs(user) {
+function isFileOlderThan6Hrs(user) {
 	
 	var givenFileName = user + '_given.txt';
 	var hasFileGiven = fs.existsSync(givenFileName);
@@ -113,8 +116,7 @@ function isFileOlderThan12Hrs(user) {
         return console.error(err);
       }
       now = new Date().getTime();
-      endTime = new Date(stat.ctime).getTime() + (60 * 1000);
-	  console.log(endTime);
+      endTime = new Date(stat.ctime).getTime() + (60 * 1000); // (6 * 60 * 60 * 1000); // 6 hours
       if (now > endTime) {
 		  console.log('Attempting delete');
 		  fs.unlinkSync(givenFileName);
@@ -130,9 +132,6 @@ slack.on('message', payload => {
 	  // console.log(userGivenBurrito[1]);
 	  // console.log(payload.event.user);
 	  // console.log(getAllUsersInStr(payload.event.text));
-	  
-	  // Reset the number of burritos you can give.
-	  isFileOlderThan12Hrs(payload.event.user);
 	  
 	  var usersGivenBurritos = getAllUsersInStr(payload.event.text);
 	  var burritosGiven = burritosInMention(payload.event.text);
