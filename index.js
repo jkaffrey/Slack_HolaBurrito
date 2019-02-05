@@ -44,7 +44,7 @@ slack.on('reaction_added', 'message', payload => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
 	  
-	  slack.send({ token: BOT_TOKEN, text: 'Hola, you recieved a burrito from ' + payload.event.user, channel: userGivenBurrito[1], as_user: false, username: 'Hola Burrito' }).then(res => {
+	  slack.send({ token: BOT_TOKEN, text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>', channel: userGivenBurrito[1], as_user: false, username: 'Hola Burrito' }).then(res => {
 		  console.log( 'Successfully answered the command' );
 	  }).catch(console.error);
   }
