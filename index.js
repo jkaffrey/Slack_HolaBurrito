@@ -137,14 +137,19 @@ slack.on('message', payload => {
 	  for (var i = 0; i < usersGivenBurritos.length; i++) {
 	  
 		  var userGivenBurrito = usersGivenBurritos[i];
+		  
+		  if (!userGivenBurrito) {
+			  break;
+		  }
+		  
 		  if (payload.event.user === userGivenBurrito) {
 			  slack.send({ token: BOT_TOKEN, text: 'You cannot give yourself a burrito.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {}).catch(console.error);
-			  return;
+			  break;
 		  }
 		  
 		  if (burritosRemainingPerDay(payload.event.user) <= 0) {
 			  slack.send({ token: BOT_TOKEN, text: 'You are out of burritos to give today.', channel: payload.event.user, as_user: false, username: 'Hola Burrito' }).then(res => {}).catch(console.error);
-			  return;
+			  break;
 		  }
 		  
 		  burritoGiven(payload.event.user, userGivenBurrito, burritosGiven);
