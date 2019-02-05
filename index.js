@@ -110,6 +110,7 @@ function isFileOlderThan12Hrs(user) {
       now = new Date().getTime();
       endTime = new Date(stat.ctime).getTime() + 60000;
       if (now > endTime) {
+		  console.log('Attempting delete');
 		  fs.unlinkSync(givenFileName);
 	  }
 	});
@@ -124,7 +125,8 @@ slack.on('message', payload => {
 	  // console.log(payload.event.user);
 	  // console.log(getAllUsersInStr(payload.event.text));
 	  
-	  console.log(epochToJsDate(payload.event.ts));
+	  // Reset the number of burritos you can give.
+	  isFileOlderThan12Hrs(payload.event.user);
 	  
 	  var usersGivenBurritos = getAllUsersInStr(payload.event.text);
 	  var burritosGiven = burritosInMention(payload.event.text);
