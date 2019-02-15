@@ -7,9 +7,6 @@ const ts = require('tinyspeck'),
     REQUEST_URL =  process.env.REQUEST_URL,
     MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY;
 
-var redis = require("redis"),
-    client = redis.createClient();
-
 const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
