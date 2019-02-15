@@ -10,7 +10,7 @@ const ts = require('tinyspeck'),
 const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
-let subPath = "burritos/";
+let subPath = "";
 
 function burritoGiven(fromUser, toUser, numberGiven) {
 
