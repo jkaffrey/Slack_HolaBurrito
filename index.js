@@ -11,68 +11,66 @@ var redis = require("redis"),
     client = redis.createClient();
 
 const burritoName = "burritos:";
-const recievedStr = ":recieved";
-const givenStr = ":given";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 
 function burritoGiven(fromUser, toUser, numberGiven) {
 
     // Reset the number of burritos you can give.
-    // isFileOlderThan6Hrs(fromUser);
+    isFileOlderThan6Hrs(fromUser);
 
     for (var i = 0; i < numberGiven; i++) {
 
-        var recievedBurritoKey = burritoName + toUser + recievedStr;
-        var givenBurritoKey = burritoName + fromUser + givenStr;
+        var recievedFileName = subPath + toUser + '_recieved.txt';
+        var givenFileName = subPath + fromUser + '_given.txt';
 
-        client.get(recievedBurritoKey, function(err, rslt) {
+        var hasFileRecieved = fs.existsSync(recievedFileName);
+        if (!hasFileRecieved) {
+            fs.writeFileSync(recievedFileName, '');
+        }
 
-            if (!rslt) {
-                client.set(recievedBurritoKey, '0');
-            }
+        var hasFileGiven = fs.existsSync(givenFileName);
+        if (!hasFileGiven) {
+            fs.writeFileSync(givenFileName, '');
+        }
 
-            client.incr(recievedBurritoKey);
-        });
+        var contentRecieved = fs.readFileSync(recievedFileName, 'utf8');
+        fs.writeFileSync(recievedFileName, contentRecieved + ',' + fromUser);
 
-        client.get(givenBurritoKey, function(err, rslt) {
-
-            if (!rslt) {
-                client.set(givenBurritoKey, '0');
-            }
-
-            client.incr(givenBurritoKey);
-        });
+        var contentGiven = fs.readFileSync(givenFileName, 'utf8');
+        fs.writeFileSync(givenFileName, contentGiven + ',' + toUser);
     }
 };
 
 function burritosRemainingPerDay(user) {
 
-    var givenBurritoKey = burritoName + user + givenStr;
-    return client.get(givenBurritoKey, function(err, rslt) {
+    var givenFileName = subPath + user + '_given.txt';
 
-        if (!rslt) {
-            client.set(givenBurritoKey, '0');
-            return MAX_BURRITOS_PER_DAY;
-        } else {
-            return MAX_BURRITOS_PER_DAY - rslt;
-        }
-    });
+    var hasFileGiven = fs.existsSync(givenFileName);
+    if (!hasFileGiven) {
+        fs.writeFileSync(givenFileName, '');
+        return MAX_BURRITOS_PER_DAY;
+    }
+
+    var givenBurritos = fs.readFileSync(givenFileName, 'utf8');
+    givenBurritos = (givenBurritos.split(",").length - 1);
+
+    return MAX_BURRITOS_PER_DAY - givenBurritos;
 }
 
 function burriotsRecieved(user) {
 
-    var recievedBurritoKey = burritoName + user + recievedStr;
+    var recievedFileName = subPath + user + '_recieved.txt';
+    var hasFileRecieved = fs.existsSync(recievedFileName);
+    if (!hasFileRecieved) {
+        fs.writeFileSync(recievedFileName, '');
+        return 0;
+    }
 
-    return client.get(recievedBurritoKey, function(err, rslt) {
+    var recievedBurritos = fs.readFileSync(recievedFileName, 'utf8');
+    recievedBurritos = (recievedBurritos.split(",").length - 1);
 
-        if (!rslt) {
-            client.set(recievedBurritoKey, '0');
-            return 0;
-        } else {
-            return rslt;
-        }
-    });
+    return recievedBurritos;
 }
 
 function burritosInMention(str) {
@@ -104,23 +102,23 @@ function getAllUsersInStr(str) {
     return outputUsers;
 }
 
-// function isFileOlderThan6Hrs(user) {
-//
-//     var givenFileName = subPath + user + '_given.txt';
-//     var hasFileGiven = fs.existsSync(givenFileName);
-//     if (!hasFileGiven) {
-//         return;
-//     }
-//
-//     var stat = fs.statSync(givenFileName);
-//     var endTime, now;
-//
-//     now = new Date().getTime();
-//     endTime = new Date(stat.ctime).getTime() + (8 * 60 * 60 * 1000); // 8 hours
-//     if (now > endTime) {
-//         fs.unlinkSync(givenFileName);
-//     }
-// }
+function isFileOlderThan6Hrs(user) {
+
+    var givenFileName = subPath + user + '_given.txt';
+    var hasFileGiven = fs.existsSync(givenFileName);
+    if (!hasFileGiven) {
+        return;
+    }
+
+    var stat = fs.statSync(givenFileName);
+    var endTime, now;
+
+    now = new Date().getTime();
+    endTime = new Date(stat.ctime).getTime() + (8 * 60 * 60 * 1000); // 8 hours
+    if (now > endTime) {
+        fs.unlinkSync(givenFileName);
+    }
+}
 
 slack.on('message', payload => {
 
@@ -178,21 +176,12 @@ slack.on('message', payload => {
 slack.on('/burritostats', payload => {
 
     var requester = payload.user_id;
-    var burritosLeft = burritosRemainingPerDay(requester);
-    var totalBurritosRecieved = burriotsRecieved(requester);
+var burritosLeft = burritosRemainingPerDay(requester);
+var totalBurritosRecieved = burriotsRecieved(requester);
 
-    slack.send({ token: BOT_TOKEN, text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' burrito(s).', channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {}).catch(console.error);
+slack.send({ token: BOT_TOKEN, text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' burrito(s).', channel: requester, as_user: false, username: 'Hola Burrito' }).then(res => {}).catch(console.error);
 });
 
-client.on("connect", function () {
-
-    console.log('Redis initalized');
-});
-
-client.on('error', function (err) {
-
-    console.log('Something went wrong ' + err);
-});
 
 // incoming http requests
 slack.listen(PORT);
