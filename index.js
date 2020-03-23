@@ -30,8 +30,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
-            burritosReceived.update({ slackUser : recievedABurrito }, $inc : { count : NumberLong(1) });
-            burritosGiven.update({ slackUser : gaveABurrito }, $inc : { count : NumberLong(1) });
+            burritosReceived.update({ slackUser : recievedABurrito }, { $inc : { count : NumberLong(1) }});
+            burritosGiven.update({ slackUser : gaveABurrito }, { $inc : { count : NumberLong(1) }});
         }
     };
 
