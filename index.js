@@ -14,13 +14,15 @@ const ts = require('tinyspeck'),
 const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
-let uri = 'mongodb://holaBurrito:lS1AVMBwkliyjoPV@ds139960.mlab.com:39960/heroku_8k5h3x81';
+let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:39960/heroku_8k5h3x81');
 //let uri = 'testing'; //mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@' + MONGODB_URI;
 console.log(uri);
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
-    if (err) throw err;
+    if (err) {
+        console.log('Failed to connect to mongodb');
+    }
 
     let db = client.db('heroku_8k5h3x81')
 
