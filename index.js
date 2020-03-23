@@ -39,28 +39,29 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     function burritosRemainingPerDay(user) {
 
-        var givenBurritos = burritosGiven.findOne({ slackUser : user }, function(err, res) {
+        var givenBurritos = 0;
+        burritosGiven.findOne({ slackUser : user }, function(err, res) {
             if (err || !res) {
-                return 0;
+                givenBurritos = 0;
             }
 
-            console.log(res);
-            return res.count;
+            console.log('Result: ' + res);
+            console.log('Count: ' + res.count);
+            givenBurritos = res.count;
         });
 
-        console.log('Remaining: ' + givenBurritos);
         return MAX_BURRITOS_PER_DAY - givenBurritos;
     }
 
     function burriotsRecieved(user) {
 
-        var recievedBurritos = burritosReceived.findOne({ slackUser : user }, function(err, res) {
+        var recievedBurritos = 0;
+        burritosReceived.findOne({ slackUser : user }, function(err, res) {
             if (err || !res) {
-                return 0;
+                recievedBurritos = 0;
             }
 
-            console.log(res);
-            return res.count;
+            recievedBurritos = res.count;
         });
 
         return recievedBurritos;
