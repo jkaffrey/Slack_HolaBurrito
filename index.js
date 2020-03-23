@@ -7,7 +7,6 @@ const ts = require('tinyspeck'),
     TOKEN = process.env.TOKEN,
     REQUEST_URL =  process.env.REQUEST_URL,
     MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY,
-    MONGODB_URI=process.env.MONGODB_URI,
     MONGODB_USER=process.env.MONGODB_USER,
     MONGODB_PASS=process.env.MONGODB_PASS;
 
@@ -15,7 +14,7 @@ const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 //let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:39960/heroku_8k5h3x81');
-let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@' + MONGODB_URI);
+let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@ds139960.mlab.com:39960/heroku_8k5h3x81');
 console.log(uri);
 
 mongodb.MongoClient.connect(uri, function(err, client) {
