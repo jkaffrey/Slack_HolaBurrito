@@ -46,7 +46,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             }
 
             return res.count;
-        }));
+        }))));
     }
 
     async function burriotsRecieved(user) {
