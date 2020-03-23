@@ -15,7 +15,7 @@ const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 //let uri = 'mongodb://user:pass@host:port/dbname';
-let uri = 'mongodb://' + MONGODB_USER = ':' + MONGODB_PASS + '@' + MONGODB_URI;
+let uri = 'mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@' + MONGODB_URI;
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
@@ -30,20 +30,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
-            burritosReceived.update({ slackUser : recievedABurrito }, $inc : { count : NumberLong(1) });
-            burritosGiven.update({ slackUser : gaveABurrito }, $inc : { count : NumberLong(1) });
+            burritosReceived.update({ slackUser : recievedABurrito }, { $inc : { count : NumberLong(1) }});
+            burritosGiven.update({ slackUser : gaveABurrito }, { $inc : { count : NumberLong(1) }});
         }
     };
 
     function burritosRemainingPerDay(user) {
 
-       var givenBurritos = burritosGiven.findOne({ slackUser : user }, function(error, res) {
-           if (error) {
-               return 0;
-           }
+        var givenBurritos = burritosGiven.findOne({ slackUser : user }, function(error, res) {
+            if (error) {
+                return 0;
+            }
 
-           return res.count;
-       });
+            return res.count;
+        });
 
         return MAX_BURRITOS_PER_DAY - givenBurritos;
     }
