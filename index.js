@@ -15,7 +15,8 @@ const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 //let uri = 'mongodb://user:pass@host:port/dbname';
-let uri = ''; //mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@' + MONGODB_URI;
+let uri = 'testing'; //mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@' + MONGODB_URI;
+console.log(uri);
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
