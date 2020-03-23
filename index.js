@@ -43,7 +43,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     function burritosRemainingPerDay(user) {
 
         var givenBurritos = burritosGiven.findOne({ slackUser : user }, function(err, res) {
-            if (err) {
+            if (err || res) {
                 return 0;
             }
 
@@ -57,7 +57,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     function burriotsRecieved(user) {
 
         var recievedBurritos = burritosReceived.findOne({ slackUser : user }, function(err, res) {
-            if (err) {
+            if (err || res) {
                 return 0;
             }
 
