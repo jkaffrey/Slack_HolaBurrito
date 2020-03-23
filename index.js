@@ -32,15 +32,15 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
-            burritosReceived.updateOne({ slackUser : recievedABurrito }, { $inc : { count : 1 }});
-            burritosGiven.updateOne({ slackUser : gaveABurrito }, { $inc : { count : 1 }});
+            burritosReceived.update({ slackUser : recievedABurrito }, { $inc : { count : 1 }}, { upsert : true });
+            burritosGiven.update({ slackUser : gaveABurrito }, { $inc : { count : 1 }}, { upsert : true });
         }
     };
 
     function burritosRemainingPerDay(user) {
 
-        var givenBurritos = burritosGiven.findOne({ slackUser : user }, function(error, res) {
-            if (error) {
+        var givenBurritos = burritosGiven.findOne({ slackUser : user }, function(err, res) {
+            if (err) {
                 return 0;
             }
 
