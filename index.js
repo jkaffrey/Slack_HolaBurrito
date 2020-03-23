@@ -32,8 +32,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
-            burritosReceived.update({ slackUser : recievedABurrito }, { $inc : { count : 1 }}, { upsert : true });
-            burritosGiven.update({ slackUser : gaveABurrito }, { $inc : { count : 1 }}, { upsert : true });
+            burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : 1 }}, { upsert : true });
+            burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : 1 }}, { upsert : true });
         }
     };
 
