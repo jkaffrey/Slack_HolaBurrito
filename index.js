@@ -37,26 +37,14 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }
     };
 
-    function burritosRemainingPerDay(user) {
+    async function burritosRemainingPerDay(user) {
 
-        return MAX_BURRITOS_PER_DAY - burritosGiven.findOne({ slackUser : user }).then(function(res) {
-            if (!res) {
-                return 0;
-            }
-
-            return res.count;
-        })
+        return MAX_BURRITOS_PER_DAY - (burritosGiven.findOne({ slackUser : user }).count || 0);
     }
 
-    function burriotsRecieved(user) {
+    async function burriotsRecieved(user) {
 
-        return burritosReceived.findOne({ slackUser : user }).then(function(res) {
-            if (!res) {
-                return 0;
-            }
-
-            return res.count;
-        });
+        return burritosReceived.findOne({ slackUser : user }).count || 0;
     }
 
     function burritosInMention(str) {
