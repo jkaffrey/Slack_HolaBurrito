@@ -32,8 +32,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
-            burritosReceived.update({ slackUser : recievedABurrito }, { $inc : { count : 1 }});
-            burritosGiven.update({ slackUser : gaveABurrito }, { $inc : { count : 1 }});
+            burritosReceived.updateOne({ slackUser : recievedABurrito }, { $inc : { count : 1 }});
+            burritosGiven.updateOne({ slackUser : gaveABurrito }, { $inc : { count : 1 }});
         }
     };
 
@@ -44,6 +44,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return 0;
             }
 
+            console.log(res);
             return res.count;
         });
 
@@ -57,7 +58,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return 0;
             }
 
-            return result.count;
+            console.log(res);
+            return res.count;
         });
 
         return recievedBurritos;
