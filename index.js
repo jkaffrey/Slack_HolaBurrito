@@ -24,6 +24,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     }
 
     let db = client.db('heroku_8k5h3x81')
+    console.log(db);
 
     let burritosGiven = db.collection('burritosGiven');
     let burritosReceived = db.collection('burritosReceived');
@@ -32,6 +33,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
+            console.log(burritosReceived);
+            console.log(burritosGiven);
             burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : 1 }}, { upsert : true });
             burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : 1 }}, { upsert : true });
         }
