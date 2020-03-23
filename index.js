@@ -45,11 +45,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 givenBurritos = 0;
             }
 
-            console.log('Result: ' + res);
-            console.log('Count: ' + res.count);
             givenBurritos = res.count;
         });
 
+        console.log('Given burritos: ' + givenBurritos);
         return MAX_BURRITOS_PER_DAY - givenBurritos;
     }
 
@@ -64,6 +63,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             recievedBurritos = res.count;
         });
 
+        console.log('Received burritos: ' + recievedBurritos);
         return recievedBurritos;
     }
 
