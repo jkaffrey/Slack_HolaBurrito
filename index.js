@@ -37,7 +37,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }
     };
 
-    function burritosRemainingPerDay(user) {
+    async function burritosRemainingPerDay(user) {
 
         return await (MAX_BURRITOS_PER_DAY - burritosGiven.findOne({ slackUser : user }, function(err, res) {
             if (err || !res) {
@@ -48,7 +48,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }));
     }
 
-    function burriotsRecieved(user) {
+    async function burriotsRecieved(user) {
 
         return await burritosReceived.findOne({ slackUser : user }, function(err, res) {
             if (err || !res) {
