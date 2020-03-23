@@ -39,18 +39,18 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     function burritosRemainingPerDay(user) {
 
-        return (MAX_BURRITOS_PER_DAY - burritosGiven.findOne({ slackUser : user }, function(err, res) {
+        return await (MAX_BURRITOS_PER_DAY - burritosGiven.findOne({ slackUser : user }, function(err, res) {
             if (err || !res) {
                 return 0;
             }
 
             return res.count;
-        }))
+        }));
     }
 
     function burriotsRecieved(user) {
 
-        return burritosReceived.findOne({ slackUser : user }, function(err, res) {
+        return await burritosReceived.findOne({ slackUser : user }, function(err, res) {
             if (err || !res) {
                 return 0;
             }
