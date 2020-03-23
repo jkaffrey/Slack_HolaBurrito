@@ -39,15 +39,33 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     async function burritosRemainingPerDay(user) {
 
-        var result = await burritosGiven.findOne({ slackUser : user }).exec();
-        console.log('Remaining: ' + result);
-        return MAX_BURRITOS_PER_DAY - 0;
+        var query = burritosGiven.findOne({ slackUser : user }, function(err, res) {
+
+            if (err || !res) {
+                return 0;
+            }
+
+            return res.count;
+        });
+
+        var res = await query.exec();
+
+        return MAX_BURRITOS_PER_DAY - res;
     }
 
     async function burriotsRecieved(user) {
 
-        var result = await burritosReceived.findOne({ slackUser : user }).exec();
-        console.log('Recieved: ' + result);
+        var query = burritosReceived.findOne({ slackUser : user }, function(err, res) {
+
+            if (err || !res) {
+                return 0;
+            }
+
+            return res.count;
+        });
+
+        var res = await query.exec();
+        return res;
     }
 
     function burritosInMention(str) {
