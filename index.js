@@ -72,6 +72,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     }
 
+    this.burritosRemainingSync = async function(user) {
+
+        return await that.burritosRemainingPerDay(user);
+    }
+
     function burritosInMention(str) {
 
         var burritoCount = 0;
@@ -110,7 +115,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
             var giveFailed = false;
 
-            if (burritosToDistribute > (await burritosRemainingPerDay(payload.event.user))) {
+            console.log('Remaining: ' + that.burritosRemainingSync);
+            if (burritosToDistribute > that.burritosRemainingSync) {
 
                 slack.send({
                     token: BOT_TOKEN,
@@ -132,20 +138,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     break;
                 }
 
-                if (payload.event.user === userGivenBurrito) {
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: 'You cannot give yourself a burrito.',
-                        channel: payload.event.user,
-                        as_user: false,
-                        username: 'Hola Burrito'
-                    }).then(res => {
-                    }).catch(console.error);
-                    giveFailed = true;
-                    break;
-                }
+                // if (payload.event.user === userGivenBurrito) {
+                //     slack.send({
+                //         token: BOT_TOKEN,
+                //         text: 'You cannot give yourself a burrito.',
+                //         channel: payload.event.user,
+                //         as_user: false,
+                //         username: 'Hola Burrito'
+                //     }).then(res => {
+                //     }).catch(console.error);
+                //     giveFailed = true;
+                //     break;
+                // }
 
-                if ((await burritosRemainingPerDay(payload.event.user)) <= 0) {
+                if (that.burritosRemainingSync <= 0) {
                     slack.send({
                         token: BOT_TOKEN,
                         text: 'You are out of burritos to give today.',
