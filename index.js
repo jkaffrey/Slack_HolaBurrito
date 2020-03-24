@@ -39,7 +39,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     this.burritosRemainingPerDay = function(user) {
 
-        //MAX_BURRITOS_PER_DAY -
         return new Promise(function (resolve, reject) {
 
             var query = burritosGiven.findOne({ slackUser : user }, function (err, res) {
@@ -195,18 +194,21 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('/burritostats', payload => {
 
-        var requester = payload.user_id;
-        var burritosLeft = that.burritosRemainingPerDay(requester);
-        var totalBurritosRecieved = that.burriotsRecieved(requester);
+        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester)], function(res) {
 
-        slack.send({
-            token: BOT_TOKEN,
-            text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' burrito(s).',
-            channel: requester,
-            as_user: false,
-            username: 'Hola Burrito'
-        }).then(res => {
-        }).catch(console.error);
+            var requester = payload.user_id;
+            var burritosLeft = res[0];
+            var totalBurritosRecieved = res[1];
+
+            slack.send({
+                token: BOT_TOKEN,
+                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' burrito(s).',
+                channel: requester,
+                as_user: false,
+                username: 'Hola Burrito'
+            }).then(res => {
+            }).catch(console.error);
+        });
     });
 
 
