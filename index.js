@@ -231,10 +231,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
 
-            var output = '';
+            var output = ':burrito: Burrito Leaderboard :burrito:';
             for (var i = 0; i < res.length; i++) {
 
-                output += '<@' + res[i].slackUser  + '> -- ' + res[i].count + ' :burrito: <:burrito:> \r\n';
+                output += '#' + (i+1) + ' <@' + res[i].slackUser  + '> -- ' + res[i].count + '\r\n';
             }
 
             slack.send({
