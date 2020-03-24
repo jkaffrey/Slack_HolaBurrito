@@ -19,6 +19,8 @@ console.log(uri);
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
+    var that = this;
+
     if (err) {
         console.log('Failed to connect to mongodb');
     }
@@ -37,7 +39,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }
     };
 
-    function burritosRemainingPerDay(user) {
+    this.burritosRemainingPerDay = function(user) {
 
         return burritosGiven.findOne({ slackUser : user }, function(err, res) {
 
@@ -49,7 +51,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     }
 
-    function burriotsRecieved(user) {
+    this.burriotsRecieved = function(user) {
 
         return burritosReceived.findOne({ slackUser : user }, function(err, res) {
 
@@ -156,7 +158,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return;
             }
 
-            burritosRemainingPerDay(payload.event.user).then(function(count) {
+            that.burritosRemainingPerDay(payload.event.user).then(function(count) {
 
                 slack.send({
                     token: BOT_TOKEN,
@@ -168,7 +170,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }).catch(console.error);
             });
 
-            burriotsRecieved(userGivenBurrito).then(function(count) {
+            that.burriotsRecieved(userGivenBurrito).then(function(count) {
 
                 slack.send({
                     token: BOT_TOKEN,
