@@ -17,9 +17,9 @@ let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:3996
 //let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@ds139960.mlab.com:39960/heroku_8k5h3x81');
 console.log(uri);
 
-var that = this;
-
 mongodb.MongoClient.connect(uri, function(err, client) {
+
+    var that = this;
 
     if (err) {
         console.log('Failed to connect to mongodb');
@@ -39,7 +39,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }
     };
 
-    that.burritosRemainingPerDay = function(user) {
+    this.burritosRemainingPerDay = function(user) {
 
         return burritosGiven.findOne({ slackUser : user }, function(err, res) {
 
@@ -51,7 +51,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     }
 
-    that.burriotsRecieved = function(user) {
+    this.burriotsRecieved = function(user) {
 
         return burritosReceived.findOne({ slackUser : user }, function(err, res) {
 
@@ -95,6 +95,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('message', payload => {
 
         if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
+
+            console.log('That instance: ' + that);
 
             var usersGivenBurritos = getAllUsersInStr(payload.event.text);
             var burritosGiven = burritosInMention(payload.event.text);
