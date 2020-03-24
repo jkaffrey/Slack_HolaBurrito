@@ -41,26 +41,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     this.burritosRemainingPerDay = function(user) {
 
-        return burritosGiven.findOne({ slackUser : user }, function(err, res) {
-
-            if (err || !res) {
-                return 0;
-            }
-
-            return MAX_BURRITOS_PER_DAY - res.count;
-        });
+        //MAX_BURRITOS_PER_DAY -
+        return burritosGiven.findOne({ slackUser : user });
     }
 
     this.burriotsRecieved = function(user) {
 
-        return burritosReceived.findOne({ slackUser : user }, function(err, res) {
-
-            if (err || !res) {
-                return 0;
-            }
-
-            return res.count;
-        });
+        return burritosReceived.findOne({ slackUser : user });
     }
 
     function burritosInMention(str) {
