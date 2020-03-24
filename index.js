@@ -115,13 +115,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('message', payload => {
 
         var emoteType;
-        if (payload.event.text.indexOf(':burrito:') > 0) {
+        if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
             emoteType = 'burrito';
-        } else if (payload.event.text.indexOf(':bulbie:') > 0) {
+        } else if (payload.event.text && payload.event.text.indexOf(':bulbie:') > 0) {
             emoteType = 'bulbie';
-        } else if (payload.event.text.indexOf(':coin:') > 0) {
+        } else if (payload.event.text && payload.event.text.indexOf(':coin:') > 0) {
             emoteType = 'coin';
-        } else if (payload.event.text.indexOf(':tanks:') > 0) {
+        } else if (payload.event.text && payload.event.text.indexOf(':tanks:') > 0) {
             emoteType = 'tanks';
         }
 
