@@ -114,7 +114,69 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('message', payload => {
 
-        if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
+        var emoteType;
+        if (payload.event.text.indexOf(':burrito:') > 0) {
+            emoteType = 'burrito';
+        } else if (payload.event.text.indexOf(':bulbie:') > 0) {
+            emoteType = 'bulbie';
+        } else if (payload.event.text.indexOf(':coin:') > 0) {
+            emoteType = 'coin';
+        } else if (payload.event.text.indexOf(':tanks:') > 0) {
+            emoteType = 'tanks';
+        }
+
+        if (payload.event.text && emoteType === 'bulbie') {
+
+            var usersMentioned = getAllUsersInStr(payload.event.text);
+            var giverName  = payload.event.user;
+            for (var i = 0; i < usersMentioned.length; i++) {
+
+                var userMentioned = usersMentioned[i];
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.',
+                    channel: userMentioned,
+                    as_user: false,
+                    username: 'Hola Burrito'
+                }).then(res => {
+                }).catch(console.error);
+            }
+        } else if (payload.event.text && emoteType === 'coin') {
+
+            var usersMentioned = getAllUsersInStr(payload.event.text);
+            var giverName  = payload.event.user;
+            for (var i = 0; i < usersMentioned.length; i++) {
+
+                var userMentioned = usersMentioned[i];
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'It\'s-a Me, MARIO!!!! You got a coin from <@' + giverName + '>.',
+                    channel: userMentioned,
+                    as_user: false,
+                    username: 'Hola Burrito'
+                }).then(res => {
+                }).catch(console.error);
+            }
+        } else if (payload.event.text && emoteType === 'tanks') {
+
+            var usersMentioned = getAllUsersInStr(payload.event.text);
+            var giverName  = payload.event.user;
+            for (var i = 0; i < usersMentioned.length; i++) {
+
+                var userMentioned = usersMentioned[i];
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: '<@' + giverName + '> \'Tanks for all you do. :ba-dum-tsss:',
+                    channel: userMentioned,
+                    as_user: false,
+                    username: 'Hola Burrito'
+                }).then(res => {
+                }).catch(console.error);
+            }
+        } else if (payload.event.text && emoteType === 'burrito') {
 
             that.burritosRemainingPerDay(payload.event.user).then(function(remainingCount) {
 
