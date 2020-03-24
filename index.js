@@ -79,7 +79,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }
 
                 resolve(results);
-            }
+            });
         });
     }
 
