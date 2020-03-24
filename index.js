@@ -10,12 +10,10 @@ const ts = require('tinyspeck'),
     MONGODB_USER=process.env.MONGODB_USER,
     MONGODB_PASS=process.env.MONGODB_PASS;
 
-const burritoName = "burritos:";
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:39960/heroku_8k5h3x81');
 //let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@ds139960.mlab.com:39960/heroku_8k5h3x81');
-console.log(uri);
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
@@ -34,8 +32,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         for (var i = 0; i < numberGiven; i++) {
 
-            burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : 1 }}, { upsert : true });
-            burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : 1 }}, { upsert : true });
+            burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : 1 }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+            burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : 1 }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
         }
     };
 
@@ -107,7 +105,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             that.burritosRemainingPerDay(payload.event.user).then(function(remainingCount) {
 
-                console.log(payload.event);
                 var usersGivenBurritos = getAllUsersInStr(payload.event.text);
                 var burritosGiven = burritosInMention(payload.event.text);
                 var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
@@ -170,7 +167,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     return;
                 }
 
-                var pluralize = burritosGiven === 1 ? 'burrito' : 'burritos';
+                var pluralize = burritosGiven === 1 ? ' burrito' : ' burritos';
                 slack.send({
                     token: BOT_TOKEN,
                     text: 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.',
@@ -185,7 +182,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     var pluralize = count === 1 ? ' burrito' : ' burritos';
                     slack.send({
                         token: BOT_TOKEN,
-                        text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + count + pluralize,
+                        text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + count + pluralize + '.',
                         channel: '@' + userGivenBurrito,
                         as_user: false,
                         username: 'Hola Burrito'
