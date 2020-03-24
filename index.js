@@ -37,25 +37,21 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }
     };
 
-    async function burritosRemainingPerDay(user) {
+    function burritosRemainingPerDay(user) {
 
-        var query = burritosGiven.findOne({ slackUser : user }, function(err, res) {
+        return burritosGiven.findOne({ slackUser : user }, function(err, res) {
 
             if (err || !res) {
                 return 0;
             }
 
-            return res.count;
+            return MAX_BURRITOS_PER_DAY - res.count;
         });
-
-        var res = await query.exec();
-
-        return MAX_BURRITOS_PER_DAY - res;
     }
 
-    async function burriotsRecieved(user) {
+    function burriotsRecieved(user) {
 
-        var query = burritosReceived.findOne({ slackUser : user }, function(err, res) {
+        return burritosReceived.findOne({ slackUser : user }, function(err, res) {
 
             if (err || !res) {
                 return 0;
@@ -63,9 +59,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             return res.count;
         });
-
-        var res = await query.exec();
-        return res;
     }
 
     function burritosInMention(str) {
@@ -163,23 +156,29 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return;
             }
 
-            slack.send({
-                token: BOT_TOKEN,
-                text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + burritosRemainingPerDay(payload.event.user).then(function(res) { return res; }) + ' burritos left to give today.',
-                channel: payload.event.user,
-                as_user: false,
-                username: 'Hola Burrito'
-            }).then(res => {
-            }).catch(console.error);
+            burritosRemainingPerDay(payload.event.user).then(function(count) {
 
-            slack.send({
-                token: BOT_TOKEN,
-                text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + burriotsRecieved(userGivenBurrito).then(function(res) { return res; }) + ' burritos.',
-                channel: '@' + userGivenBurrito,
-                as_user: false,
-                username: 'Hola Burrito'
-            }).then(res => {
-            }).catch(console.error);
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + count + ' burritos left to give today.',
+                    channel: payload.event.user,
+                    as_user: false,
+                    username: 'Hola Burrito'
+                }).then(res => {
+                }).catch(console.error);
+            });
+
+            burriotsRecieved(userGivenBurrito).then(function(count) {
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + count + ' burritos.',
+                    channel: '@' + userGivenBurrito,
+                    as_user: false,
+                    username: 'Hola Burrito'
+                }).then(res => {
+                }).catch(console.error);
+            });
         }
     });
 
