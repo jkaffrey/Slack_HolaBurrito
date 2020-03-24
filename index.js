@@ -194,15 +194,16 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('/burritostats', payload => {
 
+        var requester = payload.user_id;
         Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester)], function(res) {
 
-            var requester = payload.user_id;
             var burritosLeft = res[0];
             var totalBurritosRecieved = res[1];
+            var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
 
             slack.send({
                 token: BOT_TOKEN,
-                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' burrito(s).',
+                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize,
                 channel: requester,
                 as_user: false,
                 username: 'Hola Burrito'
