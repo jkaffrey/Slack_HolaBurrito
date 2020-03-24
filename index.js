@@ -226,7 +226,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     });
 
-    slack.on('/burritoBoard', payload => {
+    slack.on('/burritoboard', payload => {
 
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
