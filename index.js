@@ -17,9 +17,9 @@ let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:3996
 //let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@ds139960.mlab.com:39960/heroku_8k5h3x81');
 console.log(uri);
 
-mongodb.MongoClient.connect(uri, function(err, client) {
+var that = this;
 
-    var that = this;
+mongodb.MongoClient.connect(uri, function(err, client) {
 
     if (err) {
         console.log('Failed to connect to mongodb');
@@ -39,7 +39,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         }
     };
 
-    this.burritosRemainingPerDay = function(user) {
+    that.burritosRemainingPerDay = function(user) {
 
         return burritosGiven.findOne({ slackUser : user }, function(err, res) {
 
@@ -51,7 +51,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     }
 
-    this.burriotsRecieved = function(user) {
+    that.burriotsRecieved = function(user) {
 
         return burritosReceived.findOne({ slackUser : user }, function(err, res) {
 
@@ -158,9 +158,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return;
             }
 
-            console.log('stats: ' + this.burritosRemainingPerDay(payload.event.user));
+            console.log('stats: ' + that.burritosRemainingPerDay(payload.event.user));
 
-            this.burritosRemainingPerDay(payload.event.user).then(function(count) {
+            that.burritosRemainingPerDay(payload.event.user).then(function(count) {
 
                 slack.send({
                     token: BOT_TOKEN,
@@ -172,7 +172,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }).catch(console.error);
             });
 
-            this.burriotsRecieved(userGivenBurrito).then(function(count) {
+            that.burriotsRecieved(userGivenBurrito).then(function(count) {
 
                 slack.send({
                     token: BOT_TOKEN,
