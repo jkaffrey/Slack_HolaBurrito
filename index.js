@@ -105,25 +105,23 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
 
-            console.log('That instance: ' + that);
-
             var usersGivenBurritos = getAllUsersInStr(payload.event.text);
             var burritosGiven = burritosInMention(payload.event.text);
             var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
             var giveFailed = false;
 
-            // if (burritosToDistribute > burritosRemainingPerDay(payload.event.user)) {
-            //
-            //     slack.send({
-            //         token: BOT_TOKEN,
-            //         text: 'You don\'t have enough burritos to give to everyone.',
-            //         channel: payload.event.user,
-            //         as_user: false,
-            //         username: 'Hola Burrito'
-            //     }).then(res => {
-            //     }).catch(console.error);
-            //     return;
-            // }
+            if (burritosToDistribute > await burritosRemainingPerDay(payload.event.user)) {
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You don\'t have enough burritos to give to everyone.',
+                    channel: payload.event.user,
+                    as_user: false,
+                    username: 'Hola Burrito'
+                }).then(res => {
+                }).catch(console.error);
+                return;
+            }
 
             for (var i = 0; i < usersGivenBurritos.length; i++) {
 
@@ -147,18 +145,18 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     break;
                 }
 
-                // if (burritosRemainingPerDay(payload.event.user) <= 0) {
-                //     slack.send({
-                //         token: BOT_TOKEN,
-                //         text: 'You are out of burritos to give today.',
-                //         channel: payload.event.user,
-                //         as_user: false,
-                //         username: 'Hola Burrito'
-                //     }).then(res => {
-                //     }).catch(console.error);
-                //     giveFailed = true;
-                //     break;
-                // }
+                if (await burritosRemainingPerDay(payload.event.user) <= 0) {
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You are out of burritos to give today.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: 'Hola Burrito'
+                    }).then(res => {
+                    }).catch(console.error);
+                    giveFailed = true;
+                    break;
+                }
 
                 if (!giveFailed) {
                     burritoGiven(payload.event.user, userGivenBurrito, burritosGiven);
@@ -168,8 +166,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             if (usersGivenBurritos === undefined || usersGivenBurritos.length == 0 || giveFailed) {
                 return;
             }
-
-            console.log('stats: ' + that.burritosRemainingPerDay(payload.event.user));
 
             that.burritosRemainingPerDay(payload.event.user).then(function(count) {
 
@@ -200,8 +196,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('/burritostats', payload => {
 
         var requester = payload.user_id;
-        var burritosLeft = burritosRemainingPerDay(requester);
-        var totalBurritosRecieved = burriotsRecieved(requester);
+        var burritosLeft = await burritosRemainingPerDay(requester);
+        var totalBurritosRecieved = await burriotsRecieved(requester);
 
         slack.send({
             token: BOT_TOKEN,
