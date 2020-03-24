@@ -115,8 +115,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
             var giveFailed = false;
 
-            console.log('Remaining: ' + that.burritosRemainingSync);
-            if (burritosToDistribute > that.burritosRemainingSync) {
+            console.log('Sync  Burritos: ' + that.burritosRemainingSync(payload.event.user));
+            if (burritosToDistribute > that.burritosRemainingSync(payload.event.user)) {
 
                 slack.send({
                     token: BOT_TOKEN,
@@ -138,20 +138,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     break;
                 }
 
-                // if (payload.event.user === userGivenBurrito) {
-                //     slack.send({
-                //         token: BOT_TOKEN,
-                //         text: 'You cannot give yourself a burrito.',
-                //         channel: payload.event.user,
-                //         as_user: false,
-                //         username: 'Hola Burrito'
-                //     }).then(res => {
-                //     }).catch(console.error);
-                //     giveFailed = true;
-                //     break;
-                // }
+                if (payload.event.user === userGivenBurrito) {
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You cannot give yourself a burrito.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: 'Hola Burrito'
+                    }).then(res => {
+                    }).catch(console.error);
+                    giveFailed = true;
+                    break;
+                }
 
-                if (that.burritosRemainingSync <= 0) {
+                if (that.burritosRemainingSync(payload.event.user) <= 0) {
                     slack.send({
                         token: BOT_TOKEN,
                         text: 'You are out of burritos to give today.',
@@ -202,8 +202,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('/burritostats', payload => {
 
         var requester = payload.user_id;
-        var burritosLeft = (await burritosRemainingPerDay(requester));
-        var totalBurritosRecieved = (await burriotsRecieved(requester));
+        var burritosLeft = that.burritosRemainingSync(requester);
+        var totalBurritosRecieved = that.burriotsRecieved(requester);
 
         slack.send({
             token: BOT_TOKEN,
