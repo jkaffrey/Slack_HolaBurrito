@@ -42,12 +42,34 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     this.burritosRemainingPerDay = function(user) {
 
         //MAX_BURRITOS_PER_DAY -
-        return burritosGiven.findOne({ slackUser : user });
+        return new Promise(function (resolve, reject) {
+
+            var query = burritosGiven.findOne({ slackUser : user }, function (err, res) {
+
+                if (err) {
+                    reject(err);
+                }
+
+                var result = MAX_BURRITOS_PER_DAY - (res.count || 0);
+                resolve(result);
+            });
+        });
     }
 
     this.burriotsRecieved = function(user) {
 
-        return burritosReceived.findOne({ slackUser : user });
+        return new Promise(function (resolve, reject) {
+
+            var query = burritosReceived.findOne({ slackUser : user }, function (err, res) {
+
+                if (err) {
+                    reject(err);
+                }
+
+                var result = res.count || 0;
+                resolve(result);
+            });
+        });
     }
 
     function burritosInMention(str) {
