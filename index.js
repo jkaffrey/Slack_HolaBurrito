@@ -239,7 +239,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             slack.send({
                 token: BOT_TOKEN,
-                text: output
+                text: output,
                 channel: requester,
                 as_user: false,
                 username: 'Hola Burrito'
