@@ -131,18 +131,18 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         break;
                     }
 
-                    // if (payload.event.user === userGivenBurrito) {
-                    //     slack.send({
-                    //         token: BOT_TOKEN,
-                    //         text: 'You cannot give yourself a burrito.',
-                    //         channel: payload.event.user,
-                    //         as_user: false,
-                    //         username: 'Hola Burrito'
-                    //     }).then(res => {
-                    //     }).catch(console.error);
-                    //     giveFailed = true;
-                    //     break;
-                    // }
+                    if (payload.event.user === userGivenBurrito) {
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'You cannot give yourself a burrito.',
+                            channel: payload.event.user,
+                            as_user: false,
+                            username: 'Hola Burrito'
+                        }).then(res => {
+                        }).catch(console.error);
+                        giveFailed = true;
+                        break;
+                    }
 
                     if (remainingCount <= 0) {
                         slack.send({
@@ -195,7 +195,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('/burritostats', payload => {
 
         var requester = payload.user_id;
-        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester)], function(res) {
+        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester)]).then(function(res) {
 
             var burritosLeft = res[0];
             var totalBurritosRecieved = res[1];
