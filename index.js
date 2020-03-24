@@ -158,7 +158,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return;
             }
 
-            that.burritosRemainingPerDay(payload.event.user).then(function(count) {
+            this.burritosRemainingPerDay(payload.event.user).then(function(count) {
 
                 slack.send({
                     token: BOT_TOKEN,
@@ -170,7 +170,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }).catch(console.error);
             });
 
-            that.burriotsRecieved(userGivenBurrito).then(function(count) {
+            this.burriotsRecieved(userGivenBurrito).then(function(count) {
 
                 slack.send({
                     token: BOT_TOKEN,
