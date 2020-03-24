@@ -69,6 +69,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     }
 
+    this.getBurritoBoard = function() {
+
+        return new Promise(function (resolve, reject) {
+
+            var query = burritosReceived.find().sort({ count : 1 }).toArray(function(err, results) {
+                if (err) {
+                    reject(err);
+                }
+
+                resolve(results);
+            }
+        });
+    }
+
     function burritosInMention(str) {
 
         var burritoCount = 0;
@@ -212,6 +226,27 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     });
 
+    slack.on('/burritoBoard', payload => {
+
+        var requester = payload.user_id;
+        that.getBurritoBoard().then(function(res) {
+
+            var output = '';
+            for (var i = 0; i < res.length; i++) {
+
+                output += '@' + res[i].slackUser  + ' -- ' + res[i].count + '\r\n';
+            }
+
+            slack.send({
+                token: BOT_TOKEN,
+                text: output
+                channel: requester,
+                as_user: false,
+                username: 'Hola Burrito'
+            }).then(res => {
+            }).catch(console.error);
+        });
+    });
 
     // incoming http requests
     slack.listen(PORT);
