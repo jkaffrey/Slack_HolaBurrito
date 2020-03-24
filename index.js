@@ -158,6 +158,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return;
             }
 
+            console.log('stats: ' + this.burritosRemainingPerDay(payload.event.user));
+
             this.burritosRemainingPerDay(payload.event.user).then(function(count) {
 
                 slack.send({
