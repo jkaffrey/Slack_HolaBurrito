@@ -132,6 +132,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             for (var i = 0; i < usersMentioned.length; i++) {
 
                 var userMentioned = usersMentioned[i];
+                if (payload.event.user === userMentioned) {
+                    break;
+                }
 
                 slack.send({
                     token: BOT_TOKEN,
@@ -149,10 +152,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             for (var i = 0; i < usersMentioned.length; i++) {
 
                 var userMentioned = usersMentioned[i];
+                if (payload.event.user === userMentioned) {
+                    break;
+                }
 
                 slack.send({
                     token: BOT_TOKEN,
-                    text: 'It\'s-a Me, MARIO!!!! You got a coin from <@' + giverName + '>.',
+                    text: 'It\'s-a Me, MARIO!!!! You got a coin from <@' + giverName + '> spend it wisely.',
                     channel: userMentioned,
                     as_user: false,
                     username: 'Hola Burrito'
@@ -166,6 +172,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             for (var i = 0; i < usersMentioned.length; i++) {
 
                 var userMentioned = usersMentioned[i];
+                if (payload.event.user === userMentioned) {
+                    break;
+                }
 
                 slack.send({
                     token: BOT_TOKEN,
