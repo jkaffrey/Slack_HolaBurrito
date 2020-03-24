@@ -165,7 +165,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             slack.send({
                 token: BOT_TOKEN,
-                text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + burritosRemainingPerDay(payload.event.user) + ' burritos left to give today.',
+                text: 'Hola, you gave ' + burritosGiven + ' burrito(s) to <@' + userGivenBurrito + '>. You have ' + burritosRemainingPerDay(payload.event.user).then(function(res) { return res; }) + ' burritos left to give today.',
                 channel: payload.event.user,
                 as_user: false,
                 username: 'Hola Burrito'
@@ -174,7 +174,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             slack.send({
                 token: BOT_TOKEN,
-                text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + burriotsRecieved(userGivenBurrito) + ' burritos.',
+                text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + burriotsRecieved(userGivenBurrito).then(function(res) { return res; }) + ' burritos.',
                 channel: '@' + userGivenBurrito,
                 as_user: false,
                 username: 'Hola Burrito'
