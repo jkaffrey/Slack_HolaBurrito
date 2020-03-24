@@ -73,7 +73,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         return new Promise(function (resolve, reject) {
 
-            var query = burritosReceived.find().sort({ count : 1 }).toArray(function(err, results) {
+            var query = burritosReceived.find().sort({ count : -1 }).toArray(function(err, results) {
                 if (err) {
                     reject(err);
                 }
@@ -234,7 +234,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var output = '';
             for (var i = 0; i < res.length; i++) {
 
-                output += '@' + res[i].slackUser  + ' -- ' + res[i].count + '\r\n';
+                output += '<@' + res[i].slackUser  + '> -- ' + res[i].count + '\r\n';
             }
 
             slack.send({
