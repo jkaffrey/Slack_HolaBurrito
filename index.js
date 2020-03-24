@@ -234,7 +234,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var output = '';
             for (var i = 0; i < res.length; i++) {
 
-                output += '<@' + res[i].slackUser  + '> -- ' + res[i].count + '\r\n';
+                output += '<@' + res[i].slackUser  + '> -- ' + res[i].count + ' :burrito: <:burrito:> \r\n';
             }
 
             slack.send({
