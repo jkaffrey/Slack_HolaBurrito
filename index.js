@@ -50,7 +50,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     reject(err);
                 }
 
-                var result = MAX_BURRITOS_PER_DAY - (res.count || 0);
+                var result = MAX_BURRITOS_PER_DAY - (res ? res.count : 0);
                 resolve(result);
             });
         });
@@ -66,7 +66,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     reject(err);
                 }
 
-                var result = res.count || 0;
+                var result = res ? res.count : 0;
                 resolve(result);
             });
         });
