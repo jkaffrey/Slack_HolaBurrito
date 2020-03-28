@@ -120,7 +120,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
        var reaction = payload.reaction;
        var recieved_reaction = payload.item_user;
 
-       console.log(reaction);
+       console.log(payload);
         if (reaction === 'burrito' && user_who_reacted && recieved_reaction) {
 
             console.log('It was a burrito');
