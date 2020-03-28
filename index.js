@@ -115,12 +115,14 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('reaction_added', payload => {
 
+        console.log('Reaction added');
        var user_who_reacted = payload.user;
        var reaction = payload.reaction;
        var recieved_reaction = payload.item_user;
 
         if (reaction === 'burrito' && user_who_reacted && recieved_reaction) {
 
+            console.log('It was a burrito');
             that.burritosRemainingPerDay(user_who_reacted).then(function(remainingCount) {
 
                 var usersGivenBurritos = [ recieved_reaction ];
