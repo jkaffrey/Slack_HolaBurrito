@@ -13,6 +13,7 @@ const ts = require('tinyspeck'),
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:39960/heroku_8k5h3x81');
+const USERNAME = 'Hola Burrito';
 //let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@ds139960.mlab.com:39960/heroku_8k5h3x81');
 
 mongodb.MongoClient.connect(uri, function(err, client) {
@@ -112,6 +113,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         return outputUsers;
     }
 
+    slack.on('reaction_added', payload => {
+       console.log('Reaction added');
+       console.log(payload);
+    });
+
     slack.on('message', payload => {
 
         var emoteType;
@@ -141,11 +147,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     text: 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.',
                     channel: userMentioned,
                     as_user: false,
-                    username: 'Hola Burrito'
+                    username: USERNAME
                 }).then(res => {
                 }).catch(console.error);
             }
-        } else if (payload.event.text && emoteType === 'coin') {
+        }
+
+        if (payload.event.text && emoteType === 'coin') {
 
             var usersMentioned = getAllUsersInStr(payload.event.text);
             var giverName  = payload.event.user;
@@ -161,11 +169,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     text: 'It\'s-a Me, MARIO!!!! You got a coin from <@' + giverName + '> spend it wisely.',
                     channel: userMentioned,
                     as_user: false,
-                    username: 'Hola Burrito'
+                    username: USERNAME
                 }).then(res => {
                 }).catch(console.error);
             }
-        } else if (payload.event.text && emoteType === 'tanks') {
+        }
+
+        if (payload.event.text && emoteType === 'tanks') {
 
             var usersMentioned = getAllUsersInStr(payload.event.text);
             var giverName  = payload.event.user;
@@ -181,11 +191,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     text: '<@' + giverName + '> \'Tanks for all you do. :ba-dum-tsss:',
                     channel: userMentioned,
                     as_user: false,
-                    username: 'Hola Burrito'
+                    username: USERNAME
                 }).then(res => {
                 }).catch(console.error);
             }
-        } else if (payload.event.text && emoteType === 'burrito') {
+        }
+
+        if (payload.event.text && emoteType === 'burrito') {
 
             that.burritosRemainingPerDay(payload.event.user).then(function(remainingCount) {
 
@@ -201,7 +213,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         text: 'You don\'t have enough burritos to give to everyone.',
                         channel: payload.event.user,
                         as_user: false,
-                        username: 'Hola Burrito'
+                        username: USERNAME
                     }).then(res => {
                     }).catch(console.error);
                     return;
@@ -222,7 +234,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                             text: 'You cannot give yourself a burrito.',
                             channel: payload.event.user,
                             as_user: false,
-                            username: 'Hola Burrito'
+                            username: USERNAME
                         }).then(res => {
                         }).catch(console.error);
                         giveFailed = true;
@@ -235,7 +247,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                             text: 'You are out of burritos to give today.',
                             channel: payload.event.user,
                             as_user: false,
-                            username: 'Hola Burrito'
+                            username: USERNAME
                         }).then(res => {
                         }).catch(console.error);
                         giveFailed = true;
@@ -257,7 +269,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     text: 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.',
                     channel: payload.event.user,
                     as_user: false,
-                    username: 'Hola Burrito'
+                    username: USERNAME
                 }).then(res => {
                 }).catch(console.error);
 
@@ -269,7 +281,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + count + pluralize + '.',
                         channel: '@' + userGivenBurrito,
                         as_user: false,
-                        username: 'Hola Burrito'
+                        username: USERNAME
                     }).then(res => {
                     }).catch(console.error);
                 });
@@ -291,7 +303,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize,
                 channel: requester,
                 as_user: false,
-                username: 'Hola Burrito'
+                username: USERNAME
             }).then(res => {
             }).catch(console.error);
         });
@@ -313,7 +325,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 text: output,
                 channel: requester,
                 as_user: false,
-                username: 'Hola Burrito'
+                username: USERNAME
             }).then(res => {
             }).catch(console.error);
         });
