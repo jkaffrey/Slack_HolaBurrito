@@ -121,7 +121,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         if (reaction === 'burrito' && user_who_reacted && recieved_reaction) {
 
-            console.log('It was a burrito');
             that.burritosRemainingPerDay(user_who_reacted).then(function(remainingCount) {
 
                 var usersGivenBurritos = [ recieved_reaction ];
@@ -151,18 +150,18 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         break;
                     }
 
-                    if (user_who_reacted === userGivenBurrito) {
-                        slack.send({
-                            token: BOT_TOKEN,
-                            text: 'You cannot give yourself a burrito.',
-                            channel: user_who_reacted,
-                            as_user: false,
-                            username: USERNAME
-                        }).then(res => {
-                        }).catch(console.error);
-                        giveFailed = true;
-                        break;
-                    }
+                    // if (user_who_reacted === userGivenBurrito) {
+                    //     slack.send({
+                    //         token: BOT_TOKEN,
+                    //         text: 'You cannot give yourself a burrito.',
+                    //         channel: user_who_reacted,
+                    //         as_user: false,
+                    //         username: USERNAME
+                    //     }).then(res => {
+                    //     }).catch(console.error);
+                    //     giveFailed = true;
+                    //     break;
+                    // }
 
                     if (remainingCount <= 0) {
                         slack.send({
