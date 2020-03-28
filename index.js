@@ -114,8 +114,101 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     }
 
     slack.on('reaction_added', payload => {
-       console.log('Reaction added');
-       console.log(payload);
+
+       var user_who_reacted = payload.user;
+       var reaction = payload.reaction;
+       var recieved_reaction = payload.item_user;
+
+        if (reaction === 'burrito' && user_who_reacted && recieved_reaction) {
+
+            that.burritosRemainingPerDay(user_who_reacted).then(function(remainingCount) {
+
+                var usersGivenBurritos = [ recieved_reaction ];
+                var burritosGiven = 1
+                var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
+                var giveFailed = false;
+
+                if (burritosToDistribute > remainingCount) {
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You don\'t have enough burritos to give to everyone.',
+                        channel: recieved_reaction,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                    return;
+                }
+
+                for (var i = 0; i < usersGivenBurritos.length; i++) {
+
+                    var userGivenBurrito = usersGivenBurritos[i];
+
+                    if (!userGivenBurrito) {
+                        giveFailed = true;
+                        break;
+                    }
+
+                    if (payload.event.user === userGivenBurrito) {
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'You cannot give yourself a burrito.',
+                            channel: recieved_reaction,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                        giveFailed = true;
+                        break;
+                    }
+
+                    if (remainingCount <= 0) {
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'You are out of burritos to give today.',
+                            channel: recieved_reaction,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                        giveFailed = true;
+                        break;
+                    }
+
+                    if (!giveFailed) {
+                        burritoGiven(user_who_reacted, recieved_reaction, burritosGiven);
+                    }
+                }
+
+                if (usersGivenBurritos === undefined || usersGivenBurritos.length == 0 || giveFailed) {
+                    return;
+                }
+
+                var pluralize = burritosGiven === 1 ? ' burrito' : ' burritos';
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.',
+                    channel: recieved_reaction,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+
+                that.burriotsRecieved(userGivenBurrito).then(function(count) {
+
+                    var pluralize = count === 1 ? ' burrito' : ' burritos';
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'Hola, you recieved a burrito from <@' + user_who_reacted + '>. Overall you have ' + count + pluralize + '.',
+                        channel: '@' + userGivenBurrito,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                });
+            });
+        }
     });
 
     slack.on('message', payload => {
