@@ -143,12 +143,105 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         var reaction = payload.event.reaction;
         var recieved_reaction = payload.event.item_user;
 
+        if (reaction === 'bulbie' && user_who_reacted && recieved_reaction) {
+
+            var usersMentioned = [ recieved_reaction ];
+            var giverName = user_who_reacted;
+            for (var i = 0; i < usersMentioned.length; i++) {
+
+                var userMentioned = usersMentioned[i];
+                if (payload.event.user === userMentioned) {
+                    break;
+                }
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.',
+                    channel: userMentioned,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You sent :bulbie: to <@' + userMentioned + '>',
+                    channel: giverName,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+            }
+        }
+
+        if (reaction === 'ba-dum-tsss' && user_who_reacted && recieved_reaction) {
+
+            var usersMentioned = [ recieved_reaction ];
+            var giverName = user_who_reacted;
+            for (var i = 0; i < usersMentioned.length; i++) {
+
+                var userMentioned = usersMentioned[i];
+                if (payload.event.user === userMentioned) {
+                    break;
+                }
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You got a :ba-dum-tsss: from <@' + giverName + '>. I don\'t know what you said, but they thought it was funny.',
+                    channel: userMentioned,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You sent a :ba-dum-tsss: to <@' + userMentioned + '>',
+                    channel: giverName,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+            }
+        }
+
+        if (reaction === 'tanks' && user_who_reacted && recieved_reaction) {
+
+            var usersMentioned = [ recieved_reaction ];
+            var giverName = user_who_reacted;
+            for (var i = 0; i < usersMentioned.length; i++) {
+
+                var userMentioned = usersMentioned[i];
+                if (payload.event.user === userMentioned) {
+                    break;
+                }
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:',
+                    channel: userMentioned,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You sent some :tanks: to <@' + userMentioned + '>',
+                    channel: giverName,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+            }
+        }
+
         if (reaction === 'burrito' && user_who_reacted && recieved_reaction) {
 
             that.burritosRemainingPerDay(user_who_reacted).then(function(remainingCount) {
 
                 var usersGivenBurritos = [ recieved_reaction ];
-                var burritosGiven = 1
+                var burritosGiven = 1;
                 var burritosToDistribute = (usersGivenBurritos.length - 1) * (burritosGiven.length - 1);
                 var giveFailed = false;
 
@@ -244,8 +337,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             emoteType = 'burrito';
         } else if (payload.event.text && payload.event.text.indexOf(':bulbie:') > 0) {
             emoteType = 'bulbie';
-        } else if (payload.event.text && payload.event.text.indexOf(':coin:') > 0) {
-            emoteType = 'coin';
+        } else if (payload.event.text && payload.event.text.indexOf(':ba-dum-tsss:') > 0) {
+            emoteType = 'ba-dum-tsss';
         } else if (payload.event.text && payload.event.text.indexOf(':tanks:') > 0) {
             emoteType = 'tanks';
         }
@@ -281,7 +374,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             }
         }
 
-        if (payload.event.text && emoteType === 'coin') {
+        if (payload.event.text && emoteType === 'ba-dum-tsss') {
 
             var usersMentioned = getAllUsersInStr(payload.event.text);
             var giverName  = payload.event.user;
@@ -294,7 +387,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                 slack.send({
                     token: BOT_TOKEN,
-                    text: 'It\'s-a Me, MARIO!!!! You got a coin from <@' + giverName + '> spend it wisely.',
+                    text: 'You got a :ba-dum-tsss: from <@' + giverName + '>. I don\'t know what you said, but they thought it was funny.',
                     channel: userMentioned,
                     as_user: false,
                     username: USERNAME
@@ -303,7 +396,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                 slack.send({
                     token: BOT_TOKEN,
-                    text: 'You sent a :coin: to <@' + userMentioned + '>',
+                    text: 'You sent a :ba-dum-tsss: to <@' + userMentioned + '>',
                     channel: giverName,
                     as_user: false,
                     username: USERNAME
