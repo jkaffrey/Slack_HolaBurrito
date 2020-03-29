@@ -411,7 +411,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('/burritostats', payload => {
 
         var requester = payload.user_id;
-        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.ageCount(requester)]).then(function(res) {
+        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
             var burritosLeft = res[0];
             var totalBurritosRecieved = res[1];
