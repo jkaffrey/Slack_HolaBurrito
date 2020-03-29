@@ -150,18 +150,18 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         break;
                     }
 
-                    // if (user_who_reacted === userGivenBurrito) {
-                    //     slack.send({
-                    //         token: BOT_TOKEN,
-                    //         text: 'You cannot give yourself a burrito.',
-                    //         channel: user_who_reacted,
-                    //         as_user: false,
-                    //         username: USERNAME
-                    //     }).then(res => {
-                    //     }).catch(console.error);
-                    //     giveFailed = true;
-                    //     break;
-                    // }
+                    if (user_who_reacted === userGivenBurrito) {
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'You cannot give yourself a burrito.',
+                            channel: user_who_reacted,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                        giveFailed = true;
+                        break;
+                    }
 
                     if (remainingCount <= 0) {
                         slack.send({
@@ -189,7 +189,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 slack.send({
                     token: BOT_TOKEN,
                     text: 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.',
-                    channel: recieved_reaction,
+                    channel: user_who_reacted,
                     as_user: false,
                     username: USERNAME
                 }).then(res => {
@@ -214,7 +214,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('message', payload => {
 
         var emoteType;
-        if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
+        if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':cannon:') > 0) {
+          emoteType = 'burritoCannon';
+        } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
             emoteType = 'burrito';
         } else if (payload.event.text && payload.event.text.indexOf(':bulbie:') > 0) {
             emoteType = 'bulbie';
@@ -281,7 +283,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                 slack.send({
                     token: BOT_TOKEN,
-                    text: '<@' + giverName + '> \'Tanks for all you do. :ba-dum-tsss:',
+                    text: '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:',
                     channel: userMentioned,
                     as_user: false,
                     username: USERNAME
@@ -404,13 +406,14 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('/burritoboard', payload => {
 
+        console.log(payload);
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
 
             var output = ':burrito: Burrito Leaderboard :burrito:\r\n';
             for (var i = 0; i < res.length; i++) {
 
-                output += '#' + (i+1) + ' <@' + res[i].slackUser  + '> (' + res[i].count + ')\r\n';
+                output += (i+1) + ') <@' + res[i].slackUser  + '> (' + res[i].count + ')\r\n';
             }
 
             slack.send({
