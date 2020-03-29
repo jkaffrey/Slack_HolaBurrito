@@ -64,8 +64,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     reject(err);
                 }
 
-                var id = res ? res.id : -1;
-                if (id !== -1) {
+                var id = res ? res._id : -1;
+                if (id && id !== -1) {
                     var timestamp = id.toString().substring(0,8);
                     var dateCreated = new Date( parseInt( timestamp, 16 ) * 1000 );
                     var dateDifference =  new Date().getTime() - dateCreated.getTime();
