@@ -54,6 +54,30 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     }
 
+    this.accountAge = function(user) {
+
+        return new Promise(function(resolve, reject) {
+
+            var query = burritosReceived.findOne({ slackUser : user }, function(err, res) {
+
+                if (err) {
+                    reject(err);
+                }
+
+                var id = res ? res.id : -1;
+                if (id !== -1) {
+                    var timestamp = id.toString().substring(0,8);
+                    var dateCreated = new Date( parseInt( timestamp, 16 ) * 1000 );
+                    var dateDifference =  new Date().getTime() - dateCreated.getTime();
+                    var Difference_In_Days = dateDifference / (1000 * 3600 * 24);
+                    resolve(Difference_In_Days);
+                } else {
+                    resolve(0);
+                }
+            });
+        });
+    }
+
     this.burriotsRecieved = function(user) {
 
         return new Promise(function (resolve, reject) {
@@ -387,15 +411,16 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     slack.on('/burritostats', payload => {
 
         var requester = payload.user_id;
-        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester)]).then(function(res) {
+        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.ageCount(requester)]).then(function(res) {
 
             var burritosLeft = res[0];
             var totalBurritosRecieved = res[1];
+            var accountAgeInDays = res[2];
             var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
 
             slack.send({
                 token: BOT_TOKEN,
-                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize,
+                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  'days.',
                 channel: requester,
                 as_user: false,
                 username: USERNAME
@@ -406,12 +431,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('/burritoboard', payload => {
 
-        console.log(payload);
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
 
-            var entriesLength = payload.text ? res.length : 5;
-            var boardText = payload.text ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
+            var entriesLength = (payload.text === 'all') ? res.length : 5;
+            var boardText = (payload.text === 'all') ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
 
             var output = ':burrito: ' + boardText + ' :burrito:\r\n';
             for (var i = 0; i < entriesLength ; i++) {
