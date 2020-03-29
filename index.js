@@ -269,6 +269,15 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     username: USERNAME
                 }).then(res => {
                 }).catch(console.error);
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You sent :bulbie: to <@' + userMentioned + '>',
+                    channel: giverName,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
             }
         }
 
@@ -291,13 +300,22 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     username: USERNAME
                 }).then(res => {
                 }).catch(console.error);
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You sent a :coin: to <@' + userMentioned + '>',
+                    channel: giverName,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
             }
         }
 
         if (payload.event.text && emoteType === 'tanks') {
 
             var usersMentioned = getAllUsersInStr(payload.event.text);
-            var giverName  = payload.event.user;
+            var giverName = payload.event.user;
             for (var i = 0; i < usersMentioned.length; i++) {
 
                 var userMentioned = usersMentioned[i];
@@ -309,6 +327,15 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     token: BOT_TOKEN,
                     text: '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:',
                     channel: userMentioned,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You sent some :tanks: to <@' + userMentioned + '>',
+                    channel: giverName,
                     as_user: false,
                     username: USERNAME
                 }).then(res => {
@@ -420,7 +447,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var days = accountAgeInDays === 1 ? 'day' : 'days';
             slack.send({
                 token: BOT_TOKEN,
-                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days,
+                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '.',
                 channel: requester,
                 as_user: false,
                 username: USERNAME
