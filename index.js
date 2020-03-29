@@ -410,11 +410,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
 
-            var entries = payload.text ? res.length : 5;
+            var entriesLength = payload.text ? res.length : 5;
             var boardText = payload.text ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
 
             var output = ':burrito: ' + boardText + ' :burrito:\r\n';
-            for (var i = 0; i < res.length; i++) {
+            for (var i = 0; i < entriesLength ; i++) {
 
                 output += (i+1) + ') <@' + res[i].slackUser  + '> (' + res[i].count + ')\r\n';
             }
