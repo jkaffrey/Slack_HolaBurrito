@@ -70,7 +70,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     var dateCreated = new Date( parseInt( timestamp, 16 ) * 1000 );
                     var dateDifference =  new Date().getTime() - dateCreated.getTime();
                     var Difference_In_Days = dateDifference / (1000 * 3600 * 24);
-                    resolve(Difference_In_Days);
+                    resolve(Math.round(Difference_In_Days));
                 } else {
                     resolve(0);
                 }
@@ -417,10 +417,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var totalBurritosRecieved = res[1];
             var accountAgeInDays = res[2];
             var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
-
+            var days = accountAgeInDays === 1 ? 'day' : 'days';
             slack.send({
                 token: BOT_TOKEN,
-                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  'days.',
+                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days,
                 channel: requester,
                 as_user: false,
                 username: USERNAME
