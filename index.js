@@ -467,7 +467,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var output = ':burrito: ' + boardText + ' :burrito:\r\n';
             for (var i = 0; i < entriesLength ; i++) {
 
-                output += (i+1) + ') <@' + res[i].slackUser  + '> (' + res[i].count + ')\r\n';
+                var pluralize = res[i].count === 1 ? ' burrito' : ' burritos';
+                output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + pluralize + '\r\n';
             }
 
             slack.send({
