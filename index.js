@@ -35,9 +35,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     function burritoCannon(gaveABurrito, receivedABurrito) {
 
-        that.burriotsRecieved(gaveABurrito).then(function(burritosReceived) {
+        that.burriotsRecieved(gaveABurrito).then(function(userBurritos) {
 
-            let totalBurritos =  burritosReceived > 0 ? burritosReceived : 0;
+            let totalBurritos = (userBurritos && userBurritos > 0) ? userBurritos : 0;
             let burritoCannonVal = Math.round(burritoCannonBaseVal + (totalBurritos * .15));
 
             const today = new Date();
@@ -472,6 +472,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         if (payload.event.text && emoteType === 'burritoCannon' && payload.event.subtype !== 'bot_message') {
 
             console.log(payload);
+            var message = payload.event.text;
+            var strippedMessage = message.substr(message.lastIndexOf(':') + 1, message.length);
+
             that.canBurritoCannon(payload.event.user).then(function(expireDate) {
 
                 var canBurritoCannon = expireDate ? false : true;
@@ -491,10 +494,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         username: USERNAME
                     }).then(res => {
                     }).catch(console.error);
-                    giveFailed = true;
-                }
 
-                if (usersGivenBurritos.length > 1 || !userGivenBurrito) {
+                    giveFailed = true;
+                } else if (usersGivenBurritos.length > 1 || !userGivenBurrito) {
 
                     slack.send({
                         token: BOT_TOKEN,
@@ -504,32 +506,31 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         username: USERNAME
                     }).then(res => {
                     }).catch(console.error);
+
+                    giveFailed = true;
+                } else if (payload.event.user === userGivenBurrito) {
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You cannot give yourself a burrito cannon.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+
                     giveFailed = true;
                 }
 
-                // if (payload.event.user === userGivenBurrito) {
-                //     slack.send({
-                //         token: BOT_TOKEN,
-                //         text: 'You cannot give yourself a burrito cannon.',
-                //         channel: payload.event.user,
-                //         as_user: false,
-                //         username: USERNAME
-                //     }).then(res => {
-                //     }).catch(console.error);
-                //
-                //     giveFailed = true;
-                //     break;
-                // }
-
                 if  (!giveFailed) {
 
-                    console.log(payload.event.channel);
+                    let message = strippedMessage ?  strippedMessage : 'Burritos for everyone!';
                     burritoCannon(payload.event.user, userGivenBurrito);
 
                     slack.send({
                         token: BOT_TOKEN,
                         text: '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + payload.event.user + '> :burrito: :burrito: :cannon: \r\n' +
-                            'Burritos for everyone! :celebrate: :fiesta-parrot:',
+                            ':celebrate: They say: ' + message + ' :fiesta-parrot:',
                         channel: payload.event.channel,
                         as_user: false,
                         username: USERNAME
@@ -552,7 +553,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                         slack.send({
                             token: BOT_TOKEN,
-                            text: 'Holy guacamole, you recieved a burrito cannon from <@' + payload.event.user + '>. You just gained ' + burritoCannonVal + ' burritos!',
+                            text: 'Holy guacamole, you recieved a burrito cannon from <@' + payload.event.user + '>. ' +
+                                'You just gained ' + burritoCannonVal + ' burritos!',
                             channel: '@' + userGivenBurrito,
                             as_user: false,
                             username: USERNAME
