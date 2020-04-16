@@ -558,7 +558,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                             username: USERNAME
                         }).then(res => {
                         }).catch(console.error);
-                    }
+                    });
                 }
             });
         }
