@@ -515,7 +515,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     }).then(res => {
                     }).catch(console.error);
 
-                    giveFailed = true;
+                    // giveFailed = true;
                 }
 
                 if  (!giveFailed) {
