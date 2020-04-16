@@ -37,7 +37,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         const today = new Date();
         const cooldownDate = new Date(today);
-        cooldownDate.setDate(tomorrow.getDate() + burritoCannonCoolDownDays);
+        cooldownDate.setDate(cooldownDate.getDate() + burritoCannonCoolDownDays);
 
         burritoCannonGiven.findOneAndUpdate({ slackUser : recievedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
 
@@ -519,6 +519,15 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 if  (!giveFailed) {
 
                     burritoCannon(payload.event.user, userGivenBurrito);
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: ':celebrate: <@' + userGivenBurrito + '> has been burrito cannoned :cannon: :burrito: :burrito: nice work!',
+                        channel: payload.event.channel,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
 
                     slack.send({
                         token: BOT_TOKEN,
