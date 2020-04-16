@@ -39,7 +39,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         const cooldownDate = new Date(today);
         cooldownDate.setDate(cooldownDate.getDate() + burritoCannonCoolDownDays);
 
-        burritoCannonGiven.findOneAndUpdate({ slackUser : recievedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
+        burritoCannonGiven.findOneAndUpdate({ slackUser : receivedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
 
         burritoGiven(gaveABurrito, receivedABurrito, burritoCannonVal);
     }
