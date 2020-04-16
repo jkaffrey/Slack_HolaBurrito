@@ -40,8 +40,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         cooldownDate.setDate(cooldownDate.getDate() + burritoCannonCoolDownDays);
 
         burritoCannonGiven.findOneAndUpdate({ slackUser : receivedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
-
-        burritoGiven(gaveABurrito, receivedABurrito, burritoCannonVal);
+        burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : burritoCannonVal }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
     }
 
     function burritoGiven(gaveABurrito, recievedABurrito, numberGiven) {
@@ -518,6 +517,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                 if  (!giveFailed) {
 
+                    console.log(payload.event.channel);
                     burritoCannon(payload.event.user, userGivenBurrito);
 
                     slack.send({
@@ -531,7 +531,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                     slack.send({
                         token: BOT_TOKEN,
-                        text: 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>.',
+                        text: 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>  in channel <@' + payload.event.channel + '>',
                         channel: payload.event.user,
                         as_user: false,
                         username: USERNAME
