@@ -28,15 +28,43 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     let burritosGiven = db.collection('burritosGiven');
     let burritosReceived = db.collection('burritosReceived');
+    let burritoCannonGiven = db.collection('burritoCannon');
+
+    let burritoCannonVal = 15;
+    let burritoCannonCoolDownDays = 2;
+
+    function burritoCannon(gaveABurrito, receivedABurrito) {
+
+        const today = new Date();
+        const cooldownDate = new Date(today);
+        cooldownDate.setDate(tomorrow.getDate() + burritoCannonCoolDownDays);
+
+        burritoCannonGiven.findOneAndUpdate({ slackUser : recievedABurrito }, $set : { expireDate : cooldownDate }}, { upsert : true });
+
+        burritoGiven(gaveABurrito, receivedABurrito, burritoCannonVal);
+    }
 
     function burritoGiven(gaveABurrito, recievedABurrito, numberGiven) {
 
-        for (var i = 0; i < numberGiven; i++) {
-
-            burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : 1 }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
-            burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : 1 }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
-        }
+        burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : numberGiven }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+        burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : numberGiven }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
     };
+
+    this.canBurritoCannon = function(user) {
+
+        return new Promise(function (resolve, reject) {
+
+            var query = burritoCannonGiven.findOne({ slackUser : user }, function (err, res) {
+
+                if (err) {
+                    reject(err);
+                }
+
+                var result = res ? res.expireDate : null;
+                resolve(result);
+            });
+        });
+    }
 
     this.burritosRemainingPerDay = function(user) {
 
@@ -434,6 +462,83 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }).then(res => {
                 }).catch(console.error);
             }
+        }
+
+        if (payload.event.text && emoteType === 'burritoCannon') {
+
+            console.log(payload);
+            that.canBurritoCannon(payload.event.user).then(function(expireDate) {
+
+                var canBurritoCannon = expireDate ? false : true;
+                var usersGivenBurritos = getAllUsersInStr(payload.event.text);
+                var userGivenBurrito = usersGivenBurritos[0];
+                var giveFailed = false;
+
+                if (!canBurritoCannon) {
+
+                    var timeReminaing = Math.round(Math.abs(expireDate - new Date()) / 36e5);
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You have  already used your burrito cannon, please wait '  + timeReminaing + ' hours for it to cool down.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                    giveFailed = true;
+                }
+
+                if (usersGivenBurritos.length > 1 || !userGivenBurrito) {
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You can only burrito cannon one person every ' + burritoCannonCoolDownDays + '. Please limit your \'@\' to one  person.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                    giveFailed = true;
+                }
+
+                // if (payload.event.user === userGivenBurrito) {
+                //     slack.send({
+                //         token: BOT_TOKEN,
+                //         text: 'You cannot give yourself a burrito cannon.',
+                //         channel: payload.event.user,
+                //         as_user: false,
+                //         username: USERNAME
+                //     }).then(res => {
+                //     }).catch(console.error);
+                //
+                //     giveFailed = true;
+                //     break;
+                // }
+
+                if  (!giveFailed) {
+
+                    burritoCannon(payload.event.user, userGivenBurrito);
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'Holy guacamole, you recieved a burrito cannon from <@' + payload.event.user + '>. You just gained ' + burritoCannonVal + ' burritos!',
+                        channel: '@' + userGivenBurrito,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                }
+            });
         }
 
         if (payload.event.text && emoteType === 'burrito') {
