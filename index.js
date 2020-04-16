@@ -471,10 +471,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         if (payload.event.text && emoteType === 'burritoCannon' && payload.event.subtype !== 'bot_message') {
 
-            console.log(payload);
-            var message = payload.event.text;
-            var strippedMessage = message.substr(message.lastIndexOf(':') + 1, message.length);
-
             that.canBurritoCannon(payload.event.user).then(function(expireDate) {
 
                 var canBurritoCannon = expireDate ? false : true;
@@ -510,32 +506,37 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     giveFailed = true;
                 } else if (payload.event.user === userGivenBurrito) {
 
-                    // slack.send({
-                    //     token: BOT_TOKEN,
-                    //     text: 'You cannot give yourself a burrito cannon.',
-                    //     channel: payload.event.user,
-                    //     as_user: false,
-                    //     username: USERNAME
-                    // }).then(res => {
-                    // }).catch(console.error);
-                    //
-                    // giveFailed = true;
-                }
-
-                if  (!giveFailed) {
-
-                    let message = strippedMessage ?  strippedMessage : 'Burritos for everyone!';
-                    burritoCannon(payload.event.user, userGivenBurrito);
-
                     slack.send({
                         token: BOT_TOKEN,
-                        text: '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + payload.event.user + '> :burrito: :burrito: :cannon: \r\n' +
-                            ':celebrate: They say: ' + message + ' :fiesta-parrot:',
-                        channel: payload.event.channel,
+                        text: 'You cannot give yourself a burrito cannon.',
+                        channel: payload.event.user,
                         as_user: false,
                         username: USERNAME
                     }).then(res => {
                     }).catch(console.error);
+
+                    giveFailed = true;
+                }
+
+                if  (!giveFailed) {
+
+                    var message = payload.event.text;
+                    var strippedMessage = message.substr(message.lastIndexOf(':') + 1, message.length);
+
+                    burritoCannon(payload.event.user, userGivenBurrito);
+
+                    if (strippedMessage) {
+
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + payload.event.user + '> :burrito: :burrito: :cannon: \r\n' +
+                                ':celebrate: They say: ' + strippedMessage + ' :fiesta-parrot:',
+                            channel: payload.event.channel,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                    }
 
                     slack.send({
                         token: BOT_TOKEN,
