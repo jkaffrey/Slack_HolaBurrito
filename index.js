@@ -33,7 +33,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     let burritoCannonBaseVal = 10;
     let burritoCannonCoolDownDays = 2;
 
-    function burritoCannon(gaveABurrito, receivedABurrito) {
 
         that.burriotsRecieved(gaveABurrito).then(function(userBurritos) {
 
@@ -515,7 +514,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     }).then(res => {
                     }).catch(console.error);
 
-                    // giveFailed = true;
+                    giveFailed = true;
                 }
 
                 if  (!giveFailed) {
