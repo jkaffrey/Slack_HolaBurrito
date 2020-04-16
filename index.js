@@ -30,17 +30,23 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     let burritosReceived = db.collection('burritosReceived');
     let burritoCannonGiven = db.collection('burritoCannon');
 
-    let burritoCannonVal = 15;
+    let burritoCannonBaseVal = 15;
     let burritoCannonCoolDownDays = 2;
 
     function burritoCannon(gaveABurrito, receivedABurrito) {
 
-        const today = new Date();
-        const cooldownDate = new Date(today);
-        cooldownDate.setDate(cooldownDate.getDate() + burritoCannonCoolDownDays);
+        that.burriotsRecieved(gaveABurrito).then(function(burritosReceived) {
 
-        burritoCannonGiven.findOneAndUpdate({ slackUser : receivedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
-        burritosReceived.findOneAndUpdate({ slackUser : receivedABurrito }, { $inc : { count : burritoCannonVal }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+            let totalBurritos =  burritosReceived > 0 ? burritosReceived : 0;
+            let burritoCannonVal = Math.round(burritoCannonBaseVal + (totalBurritos * .15));
+
+            const today = new Date();
+            const cooldownDate = new Date(today);
+            cooldownDate.setDate(cooldownDate.getDate() + burritoCannonCoolDownDays);
+
+            burritoCannonGiven.findOneAndUpdate({ slackUser : receivedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
+            burritosReceived.findOneAndUpdate({ slackUser : receivedABurrito }, { $inc : { count : burritoCannonVal }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+        });
     }
 
     function burritoGiven(gaveABurrito, recievedABurrito, numberGiven) {
@@ -522,7 +528,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                     slack.send({
                         token: BOT_TOKEN,
-                        text: ':celebrate: <@' + userGivenBurrito + '> has been burrito cannoned :cannon: :burrito: :burrito: nice work!',
+                        text: '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + payload.event.user + '> :burrito: :burrito: :cannon: \r\n' +
+                            'Burritos for everyone! :celebrate: :fiesta-parrot:',
                         channel: payload.event.channel,
                         as_user: false,
                         username: USERNAME
@@ -531,21 +538,27 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                     slack.send({
                         token: BOT_TOKEN,
-                        text: 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>  in channel <@' + payload.event.channel + '>',
+                        text: 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>.',
                         channel: payload.event.user,
                         as_user: false,
                         username: USERNAME
                     }).then(res => {
                     }).catch(console.error);
 
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: 'Holy guacamole, you recieved a burrito cannon from <@' + payload.event.user + '>. You just gained ' + burritoCannonVal + ' burritos!',
-                        channel: '@' + userGivenBurrito,
-                        as_user: false,
-                        username: USERNAME
-                    }).then(res => {
-                    }).catch(console.error);
+                    that.burriotsRecieved(payload.event.user).then(function(burritosReceived) {
+
+                        let totalBurritos = burritosReceived > 0 ? burritosReceived : 0;
+                        let burritoCannonVal = Math.round(burritoCannonBaseVal + (totalBurritos * .15));
+
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'Holy guacamole, you recieved a burrito cannon from <@' + payload.event.user + '>. You just gained ' + burritoCannonVal + ' burritos!',
+                            channel: '@' + userGivenBurrito,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                    }
                 }
             });
         }
