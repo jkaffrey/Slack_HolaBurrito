@@ -40,7 +40,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         cooldownDate.setDate(cooldownDate.getDate() + burritoCannonCoolDownDays);
 
         burritoCannonGiven.findOneAndUpdate({ slackUser : receivedABurrito }, { $set : { expireDate : cooldownDate } }, { upsert : true });
-        burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : burritoCannonVal }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+        burritosReceived.findOneAndUpdate({ slackUser : receivedABurrito }, { $inc : { count : burritoCannonVal }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
     }
 
     function burritoGiven(gaveABurrito, recievedABurrito, numberGiven) {
@@ -463,7 +463,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             }
         }
 
-        if (payload.event.text && emoteType === 'burritoCannon') {
+        if (payload.event.text && emoteType === 'burritoCannon' && payload.event.subtype !== 'bot_message') {
 
             console.log(payload);
             that.canBurritoCannon(payload.event.user).then(function(expireDate) {
@@ -654,7 +654,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var days = accountAgeInDays === 1 ? 'day' : 'days';
             slack.send({
                 token: BOT_TOKEN,
-                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '.',
+                text: 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')',
                 channel: requester,
                 as_user: false,
                 username: USERNAME
