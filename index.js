@@ -30,7 +30,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     let burritosReceived = db.collection('burritosReceived');
     let burritoCannonGiven = db.collection('burritoCannon');
 
-    let burritoCannonBaseVal = 15;
+    let burritoCannonBaseVal = 10;
     let burritoCannonCoolDownDays = 2;
 
     function burritoCannon(gaveABurrito, receivedABurrito) {
@@ -530,7 +530,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         slack.send({
                             token: BOT_TOKEN,
                             text: '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + payload.event.user + '> :burrito: :burrito: :cannon: \r\n' +
-                                ':celebrate: They say: ' + strippedMessage + ' :fiesta-parrot:',
+                                ':celebrate: They say: \"' + strippedMessage + '\" :fiesta-parrot:',
                             channel: payload.event.channel,
                             as_user: false,
                             username: USERNAME
