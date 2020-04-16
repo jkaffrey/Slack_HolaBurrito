@@ -510,16 +510,16 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     giveFailed = true;
                 } else if (payload.event.user === userGivenBurrito) {
 
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: 'You cannot give yourself a burrito cannon.',
-                        channel: payload.event.user,
-                        as_user: false,
-                        username: USERNAME
-                    }).then(res => {
-                    }).catch(console.error);
-
-                    giveFailed = true;
+                    // slack.send({
+                    //     token: BOT_TOKEN,
+                    //     text: 'You cannot give yourself a burrito cannon.',
+                    //     channel: payload.event.user,
+                    //     as_user: false,
+                    //     username: USERNAME
+                    // }).then(res => {
+                    // }).catch(console.error);
+                    //
+                    // giveFailed = true;
                 }
 
                 if  (!giveFailed) {
