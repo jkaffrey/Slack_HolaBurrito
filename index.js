@@ -464,9 +464,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
         var emoteType;
         if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':cannon:') > 0) {
-          emoteType = 'burritoCannon';
+            emoteType = 'burritoCannon';
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':bulbie:') > 0) {
             emoteType = 'burritosForAll';
+            console.log('burritos for all');
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
             emoteType = 'burrito';
         } else if (payload.event.text && payload.event.text.indexOf(':bulbie:') > 0) {
@@ -574,6 +575,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             that.getBurritoMultiplier().then(function(multiplier) {
 
+                console.log('Multiplier: ', multiplier);
                 if (multiplier !== 1) {
 
                     slack.send({
