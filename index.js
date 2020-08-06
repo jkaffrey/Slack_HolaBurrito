@@ -29,10 +29,40 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     let burritosGiven = db.collection('burritosGiven');
     let burritosReceived = db.collection('burritosReceived');
     let burritoCannonGiven = db.collection('burritoCannon');
+    let burritoMultiplier = db.collection('burritoMultiplier');
 
     let burritoCannonBaseVal = 10;
     let burritoCannonCoolDownDays = 2;
     let burritoCannonResetCost = 50;
+    let burritosForAllCost = 15;
+
+    this.getBurritoMultiplier = function() {
+
+        return new Promise(function (resolve, reject) {
+
+            var query = burritoMultiplier.find({}).toArray(function (err, docs) {
+
+                if (err) {
+                    reject(err);
+                }
+
+                resolve((docs && docs.length >= 0) ? docs[0].multiplierValue : 1);
+            })
+        });
+    }
+
+    Date.prototype.addHours= function(h){
+        this.setHours(this.getHours() + h);
+        return this;
+    }
+
+    this.setBurritoMultiplier = function(userId) {
+
+        // Decrease users burritos
+        burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (-1 * burritosForAllCost) } }, { upsert : true });
+        // TODO JDK make the multipler dynamic
+        burritoMultiplier.findOneAndUpdate({ slackUser : recievedABurrito }, { $set : { multiplierValue : 3, expireDate: new Date().addHours(12) }}, { upsert : true });
+    }
 
     this.getBurritoTotal = function(user) {
 
@@ -78,7 +108,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (-1 * burritoCannonResetCost) }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
                     slack.send({
                         token: BOT_TOKEN,
-                        text: 'Your burrito cannon has been reset!',
+                        text: 'Your burrito cannon has been reset! That cost you 50 burritos, use it wisely.',
                         channel: userId,
                         as_user: false,
                         username: USERNAME
@@ -117,8 +147,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     function burritoGiven(gaveABurrito, recievedABurrito, numberGiven) {
 
-        burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : numberGiven }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
-        burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : numberGiven }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+        that.getBurritoMultiplier().then(function(multiplier) {
+
+            burritosReceived.findOneAndUpdate({ slackUser : recievedABurrito }, { $inc : { count : (numberGiven * multiplier) }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+            burritosGiven.findOneAndUpdate({ slackUser : gaveABurrito }, { $inc : { count : numberGiven }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+        })
     };
 
     this.canBurritoCannon = function(user) {
@@ -432,6 +465,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         var emoteType;
         if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':cannon:') > 0) {
           emoteType = 'burritoCannon';
+        } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':bulbie:') > 0) {
+            emoteType = 'burritosForAll';
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
             emoteType = 'burrito';
         } else if (payload.event.text && payload.event.text.indexOf(':bulbie:') > 0) {
@@ -533,6 +568,46 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }).then(res => {
                 }).catch(console.error);
             }
+        }
+
+        if (payload.event.text && emoteType === 'burritosForAll' && payload.event.subtype !== 'bot_message') {
+
+            that.getBurritoMultiplier().then(function(multiplier) {
+
+                if (multiplier !== 1) {
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'There is already a burrito multipler in play. Please wait for it to expire.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                    multiplierFailed = true;
+                } else {
+
+                    that.setBurritoMultiplier( payload.event.user );
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: '<@' + payload.event.user + '> has given burritos to all! Enjoy a x3 burrito multipler for the next 12 hours.',
+                        channel: payload.event.channel,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You\'ve given burritos to all, you lost 15 burritos but probably gained some friends.',
+                        channel: payload.event.user,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                }
+            })
         }
 
         if (payload.event.text && emoteType === 'burritoCannon' && payload.event.subtype !== 'bot_message') {
