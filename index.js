@@ -61,7 +61,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         // Decrease users burritos
         burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (-1 * burritosForAllCost) } }, { upsert : true });
         // TODO JDK make the multipler dynamic
-        burritoMultiplier.findOneAndUpdate({ slackUser : userId }, { $set : { multiplierValue : 3, expireDate: new Date().addHours(12) }}, { upsert : true });
+        burritoMultiplier.findOneAndUpdate({ slackUser : userId }, { $set : { multiplierValue : 5, expireDate: new Date().addHours(12) }}, { upsert : true });
     }
 
     this.getBurritoTotal = function(user) {
@@ -446,15 +446,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                 that.burriotsRecieved(userGivenBurrito).then(function(count) {
 
-                    var pluralize = count === 1 ? ' burrito' : ' burritos';
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: 'Hola, you recieved a burrito from <@' + user_who_reacted + '>. Overall you have ' + count + pluralize + '.',
-                        channel: '@' + userGivenBurrito,
-                        as_user: false,
-                        username: USERNAME
-                    }).then(res => {
-                    }).catch(console.error);
+                    that.getBurritoMultiplier().then(function(multiplier) {
+
+                        count = count * multiplier;
+
+                        var pluralize = count === 1 ? ' burrito' : ' burritos';
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'Hola, you recieved a burrito from <@' + user_who_reacted + '>. Overall you have ' + count + pluralize + '.',
+                            channel: '@' + userGivenBurrito,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                    });
                 });
             });
         }
@@ -469,7 +474,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':cannon:') > 0) {
             emoteType = 'burritoCannon';
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') >= 0 && payload.event.text.indexOf(':bulbie:') >= 0) {
-            emoteType = 'burritosForAll';
+            // emoteType = 'burritosForAll';
             console.log('burritos for all');
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
             emoteType = 'burrito';
@@ -806,15 +811,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                 that.burriotsRecieved(userGivenBurrito).then(function(count) {
 
-                    var pluralize = count === 1 ? ' burrito' : ' burritos';
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + count + pluralize + '.',
-                        channel: '@' + userGivenBurrito,
-                        as_user: false,
-                        username: USERNAME
-                    }).then(res => {
-                    }).catch(console.error);
+                    that.getBurritoMultiplier().then(function(multiplier) {
+
+                        count = count * multiplier;
+                        var pluralize = count === 1 ? ' burrito' : ' burritos';
+
+                        slack.send({
+                            token: BOT_TOKEN,
+                            text: 'Hola, you recieved a burrito from <@' + payload.event.user + '>. Overall you have ' + count + pluralize + '.',
+                            channel: '@' + userGivenBurrito,
+                            as_user: false,
+                            username: USERNAME
+                        }).then(res => {
+                        }).catch(console.error);
+                    });
                 });
             });
         }
