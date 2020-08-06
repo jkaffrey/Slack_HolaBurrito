@@ -75,7 +75,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                     burritoCannonGiven.deleteOne({ slackUser : userId }); // Remove the burrito cannon record
                     // Remove 50 burritos from user
-                    burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (totalCount - burritoCannonResetCost) }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+                    burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (-1 * burritoCannonResetCost) }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
                     slack.send({
                         token: BOT_TOKEN,
                         text: 'Your burrito cannon has been reset!',
