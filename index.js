@@ -32,6 +32,72 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     let burritoCannonBaseVal = 10;
     let burritoCannonCoolDownDays = 2;
+    let burritoCannonResetCost = 50;
+
+    this.getBurritoTotal = function(user) {
+
+        return new Promise(function (resolve, reject) {
+
+            var query = burritosReceived.findOne({ slackUser : user }, function (err, res) {
+
+                if (err) {
+                    reject(err);
+                }
+
+                var result = res ? res.count : 0;
+                resolve(result);
+            });
+        });
+    }
+
+    this.resetBurritoCannon = function(userId) {
+
+        that.canBurritoCannon(userId).then(function(expireDate) {
+
+            var canBurritoCannon = expireDate ? false : true;
+
+            if (canBurritoCannon) {
+
+                slack.send({
+                    token: BOT_TOKEN,
+                    text: 'You have a burrito cannon to give, you cannot buy a burrito cannon until you\'ve used your current one.',
+                    channel: userId,
+                    as_user: false,
+                    username: USERNAME
+                }).then(res => {
+                }).catch(console.error);
+                return;
+            }
+
+            that.getBurritoTotal(payload.event.user).then(function(totalCount) {
+
+                 if ((totalCount - burritoCannonResetCost) >= 0) {
+
+                    burritoCannonGiven.deleteOne({ slackUser : userId }); // Remove the burrito cannon record
+                    // Remove 50 burritos from user
+                    burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (totalCount - burritoCannonResetCost) }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'Your burrito cannon has been reset!',
+                        channel: userId,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                } else {
+
+                    slack.send({
+                        token: BOT_TOKEN,
+                        text: 'You don\'t have enough burritos to pay to reset your burrito cannon.',
+                        channel: userId,
+                        as_user: false,
+                        username: USERNAME
+                    }).then(res => {
+                    }).catch(console.error);
+                }
+            });
+        });
+    }
 
     function burritoCannon(gaveABurrito, receivedABurrito) {
 
@@ -484,7 +550,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                     slack.send({
                         token: BOT_TOKEN,
-                        text: 'You have  already used your burrito cannon, please wait '  + timeReminaing + ' hours for it to cool down.',
+                        text: 'You have already used your burrito cannon, please wait '  + timeReminaing + ' hours for it to cool down.',
                         channel: payload.event.user,
                         as_user: false,
                         username: USERNAME
@@ -703,6 +769,12 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             }).then(res => {
             }).catch(console.error);
         });
+    });
+
+    slack.on('/burritocannonbuy', payload => {
+
+        var requester = payload.user_id;
+        that.resetBurritoCannon(requester);
     });
 
     // incoming http requests
