@@ -587,25 +587,41 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     multiplierFailed = true;
                 } else {
 
-                    that.setBurritoMultiplier( payload.event.user );
+                    that.getBurritoTotal(payload.event.user).then(function(totalBurritos) {
 
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: '<@' + payload.event.user + '> has given burritos to all! Enjoy a x3 burrito multipler for the next 12 hours.',
-                        channel: payload.event.channel,
-                        as_user: false,
-                        username: USERNAME
-                    }).then(res => {
-                    }).catch(console.error);
+                        if ((totalBurritos - burritosForAllCost) >= 0) {
 
-                    slack.send({
-                        token: BOT_TOKEN,
-                        text: 'You\'ve given burritos to all, you lost 15 burritos but probably gained some friends.',
-                        channel: payload.event.user,
-                        as_user: false,
-                        username: USERNAME
-                    }).then(res => {
-                    }).catch(console.error);
+                            that.setBurritoMultiplier(payload.event.user);
+
+                            slack.send({
+                                token: BOT_TOKEN,
+                                text: '<@' + payload.event.user + '> has given burritos to all! Enjoy a x3 burrito multipler for the next 12 hours.',
+                                channel: payload.event.channel,
+                                as_user: false,
+                                username: USERNAME
+                            }).then(res => {
+                            }).catch(console.error);
+
+                            slack.send({
+                                token: BOT_TOKEN,
+                                text: 'You\'ve given burritos to all, you lost 15 burritos but probably gained some friends.',
+                                channel: payload.event.user,
+                                as_user: false,
+                                username: USERNAME
+                            }).then(res => {
+                            }).catch(console.error);
+                        } else {
+
+                            slack.send({
+                                token: BOT_TOKEN,
+                                text: 'I admire your support for your colleagues but you are a few burritos short to share your burritos with everyone.',
+                                channel: payload.event.user,
+                                as_user: false,
+                                username: USERNAME
+                            }).then(res => {
+                            }).catch(console.error);
+                        }
+                    });
                 }
             })
         }
