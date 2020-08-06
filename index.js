@@ -467,15 +467,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('message', payload => {
 
-        console.log(payload.event.text);
-        console.log(payload.event.text.indexOf(':burrito:') >= 0);
-        console.log(payload.event.text.indexOf(':bulbie:') >= 0);
         var emoteType;
         if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0 && payload.event.text.indexOf(':cannon:') > 0) {
             emoteType = 'burritoCannon';
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') >= 0 && payload.event.text.indexOf(':bulbie:') >= 0) {
-            // emoteType = 'burritosForAll';
-            console.log('burritos for all');
+            emoteType = 'burritosForAll';
         } else if (payload.event.text && payload.event.text.indexOf(':burrito:') > 0) {
             emoteType = 'burrito';
         } else if (payload.event.text && payload.event.text.indexOf(':bulbie:') > 0) {
@@ -583,7 +579,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
             that.getBurritoMultiplier().then(function(multiplier) {
 
-                console.log('Multiplier: ', multiplier);
                 if (multiplier !== 1) {
 
                     slack.send({
@@ -605,7 +600,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                             slack.send({
                                 token: BOT_TOKEN,
-                                text: '<@' + payload.event.user + '> has given burritos to all! Enjoy a x3 burrito multipler for the next 12 hours.',
+                                text: '<@' + payload.event.user + '> has given burritos to all! Enjoy a special x15 burrito multipler for the next 24 hours.',
                                 channel: payload.event.channel,
                                 as_user: false,
                                 username: USERNAME
