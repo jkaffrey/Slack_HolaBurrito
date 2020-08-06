@@ -69,7 +69,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 return;
             }
 
-            that.getBurritoTotal(payload.event.user).then(function(totalCount) {
+            that.getBurritoTotal(userId).then(function(totalCount) {
 
                  if ((totalCount - burritoCannonResetCost) >= 0) {
 
