@@ -600,7 +600,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                             slack.send({
                                 token: BOT_TOKEN,
-                                text: '<@' + payload.event.user + '> has given burritos to all! Enjoy a special x15 burrito multipler for the next 24 hours.',
+                                text: '<@' + payload.event.user + '> has given burritos to all! Enjoy x5 burrito multipler for the next 12 hours.',
                                 channel: payload.event.channel,
                                 as_user: false,
                                 username: USERNAME
