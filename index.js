@@ -46,7 +46,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     reject(err);
                 }
 
-                resolve((docs && docs.length >= 0) ? docs[0].multiplierValue : 1);
+                resolve((docs != null && docs.length >= 0) ? docs[0].multiplierValue : 1);
             })
         });
     }
