@@ -578,7 +578,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                     slack.send({
                         token: BOT_TOKEN,
-                        text: 'There is already a burrito multipler in play. Please wait for it to expire.',
+                        text: 'You\'re being too zealous, there is already a burrito multipler in play. Please wait for it to expire.',
                         channel: payload.event.user,
                         as_user: false,
                         username: USERNAME
