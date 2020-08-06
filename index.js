@@ -61,7 +61,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         // Decrease users burritos
         burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (-1 * burritosForAllCost) } }, { upsert : true });
         // TODO JDK make the multipler dynamic
-        burritoMultiplier.findOneAndUpdate({ slackUser : recievedABurrito }, { $set : { multiplierValue : 3, expireDate: new Date().addHours(12) }}, { upsert : true });
+        burritoMultiplier.findOneAndUpdate({ slackUser : userId }, { $set : { multiplierValue : 3, expireDate: new Date().addHours(12) }}, { upsert : true });
     }
 
     this.getBurritoTotal = function(user) {
