@@ -12,9 +12,9 @@ const ts = require('tinyspeck'),
 
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
-let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:39960/heroku_8k5h3x81');
+// let uri = encodeURI('mongodb://holaBurrito:eZRPtdQDZ2QZpX@ds139960.mlab.com:39960/heroku_8k5h3x81');
+let uri = encodeURI('mongodb+srv://holaBurrito:eZRPtdQDZ2QZpX@holaburrito.kxxky.mongodb.net/heroku_8k5h3x81?retryWrites=true&w=majority');
 const USERNAME = 'Hola Burrito';
-//let uri = encodeURI('mongodb://' + MONGODB_USER + ':' + MONGODB_PASS + '@ds139960.mlab.com:39960/heroku_8k5h3x81');
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
