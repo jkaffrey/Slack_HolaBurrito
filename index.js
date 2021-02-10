@@ -611,7 +611,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }
 
             }
-            say(output);
+            say(output, {'response_type': 'ephemeral'});
         });
     });
     
