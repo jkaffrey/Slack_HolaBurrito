@@ -12,7 +12,7 @@ const mongodb = require('mongodb'),
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 let uri = encodeURI(MONGODB_URI);  
-const USERNAME = 'holaburrito';
+const USERNAME = 'Hola Burrito';
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
@@ -847,7 +847,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.on('/burritoboard', payload => {
         console.log("I just received /burritoboard " + JSON.stringify(payload));
-        
+
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
 
