@@ -268,6 +268,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     }
 
     slack.on('reaction_added', payload => {
+        console.log("I just received a reaction." + JSON.stringify(payload));
 
         var user_who_reacted = payload.event.user;
         var reaction = payload.event.reaction;
