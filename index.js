@@ -1,21 +1,12 @@
 
-const mongodb = require('mongodb'),
-    
-    { App } = require('@slack/bolt'),
-    SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET,
-    BOT_TOKEN = process.env.BOT_TOKEN,
+const mongodb = require('mongodb');   
+const { App } = require('@slack/bolt');
+const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
-    PORT = process.env.PORT || 8080,
-    MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY,
-    MONGODB_URI=process.env.MONGODB_URI;
-
-    console.log(process.env.PORT)
-
-// setting defaults for all Slack API calls
-let slack = new App({
-    signingSecret: SLACK_SIGNING_SECRET,
-    token: BOT_TOKEN,
-});
+const PORT = process.env.PORT || 8080;
+const MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY;
+const MONGODB_URI=process.env.MONGODB_URI;
 
 let uri = encodeURI(MONGODB_URI);
 
@@ -26,6 +17,12 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     if (err) {
         console.log('Failed to connect to mongodb');
     }
+
+    // setting defaults for all Slack API calls
+    let slack = new App({
+        signingSecret: SLACK_SIGNING_SECRET,
+        token: BOT_TOKEN,
+    });
 
     let db = client.db('heroku_8k5h3x81')
 
