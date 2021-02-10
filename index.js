@@ -627,5 +627,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         // Start the app
         const client = (await slack.start(PORT));
         console.log('Slack app is running!');
+        console.log(slack);
     })();
 });
