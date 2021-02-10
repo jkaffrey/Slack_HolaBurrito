@@ -580,7 +580,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.app.event('/burritostats', async ({command, ack, say}) => {
+    slack.app.command('/burritostats', async ({command, ack, say}) => {
         await ack();
         Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
@@ -612,7 +612,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         });
     });
     
-    slack.app.event('/burritocannonbuy', async ({command, ack, say}) => {
+    slack.app.command('/burritocannonbuy', async ({command, ack, say}) => {
         await ack();
         that.resetBurritoCannon(command.user_id);
     });
