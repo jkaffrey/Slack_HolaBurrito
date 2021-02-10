@@ -12,7 +12,7 @@ const mongodb = require('mongodb'),
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
 let uri = encodeURI(MONGODB_URI);  
-const USERNAME = 'Hola Burrito';
+const USERNAME = 'holaburrito';
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
