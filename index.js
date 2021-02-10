@@ -597,6 +597,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.app.command('/burritoboard', async ({command, ack, say}) => {
+        console.log(command)
         await ack();
         that.getBurritoBoard().then(function(res) {
 
