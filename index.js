@@ -580,9 +580,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.app.event('/burritostats', ({event, client}) => {
+    slack.app.event('/burritostats', ({ack, event, client}) => {
         (async () => {
             console.log("I just received /burritostats " + JSON.stringify(event));
+            ack();
+            
             var requester = event.user_id;
             Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
@@ -596,9 +598,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.app.event('/burritoboard', ({event, client}) => {
+    slack.app.event('/burritoboard', ({ack, event, client}) => {
         (async () => {
             console.log("I just received /burritoboard " + JSON.stringify(event));
+            ack();
 
             var requester = event.user_id;
             that.getBurritoBoard().then(function(res) {
@@ -617,9 +620,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
     
-    slack.app.event('/burritocannonbuy', ({event, client}) => {
+    slack.app.event('/burritocannonbuy', ({ack, event, client}) => {
         (async () => {
             console.log("I just received /burritocannonbuy " + JSON.stringify(event));
+            ack();
 
             var requester = event.user_id;
             that.resetBurritoCannon(requester);
