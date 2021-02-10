@@ -5,7 +5,7 @@ const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const APP_TOKEN = process.env.TOKEN;
 
-let client;
+let slack = {}
 
 const PORT = process.env.PORT || 8080;
 const MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY;
@@ -22,7 +22,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     }
 
     // setting defaults for all Slack API calls
-    let slack = new App({
+    slack.app = new App({
         signingSecret: SLACK_SIGNING_SECRET,
         token: BOT_TOKEN
     });
@@ -43,7 +43,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         (async () => {
             try {
               // Use the `chat.postMessage` method to send a message from this app
-              console.log(await slack.client.chat.postMessage({
+              console.log(await slack.app.client.chat.postMessage({
                 channel: channel,
                 text: message,
                 token: BOT_TOKEN
@@ -265,7 +265,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         return outputUsers;
     }
     
-    slack.event('reaction_added', ({event, client}) => {
+    slack.app.event('reaction_added', ({event, client}) => {
         console.log("I just received a reaction." + JSON.stringify(event));
         (async () => {
 
@@ -380,7 +380,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.event('message', ({event, client}) => {
+    slack.app.event('message', ({event, client}) => {
         (async () => {
             console.log("Received message event");
             console.log("I just received a reaction." + JSON.stringify(event));
@@ -580,7 +580,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.event('/burritostats', ({event, client}) => {
+    slack.app.event('/burritostats', ({event, client}) => {
         (async () => {
             console.log("I just received /burritostats " + JSON.stringify(event));
             var requester = event.user_id;
@@ -596,7 +596,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.event('/burritoboard', ({event, client}) => {
+    slack.app.event('/burritoboard', ({event, client}) => {
         (async () => {
             console.log("I just received /burritoboard " + JSON.stringify(event));
 
@@ -617,7 +617,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
     
-    slack.event('/burritocannonbuy', ({event, client}) => {
+    slack.app.event('/burritocannonbuy', ({event, client}) => {
         (async () => {
             console.log("I just received /burritocannonbuy " + JSON.stringify(event));
 
@@ -628,8 +628,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     (async () => {
         // Start the app
-        client = (await slack.start(PORT));
-        slack.client = client;
+        slack.client = (await slack.app.start(PORT));
         console.log('Slack app is running!');
     })();
 });
