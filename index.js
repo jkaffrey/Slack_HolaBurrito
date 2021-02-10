@@ -611,7 +611,18 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }
 
             }
-            say(output, {'response_type': 'ephemeral'});
+            say({
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "New Paid Time Off request from <example.com|Fred Enriquez>\n\n<https://example.com|View request>"
+                        }
+                    }
+                ]
+            })
+            //say(output, {'response_type': 'ephemeral'});
         });
     });
     
