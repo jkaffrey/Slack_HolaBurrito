@@ -39,7 +39,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     let burritoCannonResetCost = 50;
     let burritosForAllCost = 15;
 
-    this.sendMessage = function(channel, message) {
+    slack.sendMessage = function(channel, message) {
         (async () => {
             try {
               // Use the `chat.postMessage` method to send a message from this app
@@ -105,7 +105,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var canBurritoCannon = expireDate ? false : true;
 
             if (canBurritoCannon) {
-                that.sendMessage(userId, 'You have a burrito cannon to give, you cannot buy a burrito cannon until you\'ve used your current one.')
+                slack.sendMessage(userId, 'You have a burrito cannon to give, you cannot buy a burrito cannon until you\'ve used your current one.')
                 return;
             }
 
@@ -117,9 +117,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     // Remove 50 burritos from user
                     burritosReceived.findOneAndUpdate({ slackUser : userId }, { $inc : { count : (-1 * burritoCannonResetCost) }, $set : { lastUpdateDate : new Date() }}, { upsert : true });
                     
-                    that.sendMessage(userId, 'Your burrito cannon has been reset! That cost you 50 burritos, use it wisely.');
+                    slack.sendMessage(userId, 'Your burrito cannon has been reset! That cost you 50 burritos, use it wisely.');
                 } else {
-                    that.sendMessage(userId, 'You don\'t have enough burritos to pay to reset your burrito cannon.');
+                    slack.sendMessage(userId, 'You don\'t have enough burritos to pay to reset your burrito cannon.');
                 }
             });
         });
@@ -283,8 +283,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     if (event.user === userMentioned) {
                         break;
                     }
-                    that.sendMessage(userMentioned, 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.');
-                    that.sendMessage(giverName, 'You sent :bulbie: to <@' + userMentioned + '>');
+                    slack.sendMessage(userMentioned, 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.');
+                    slack.sendMessage(giverName, 'You sent :bulbie: to <@' + userMentioned + '>');
                 }
             }
 
@@ -298,8 +298,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     if (event.user === userMentioned) {
                         break;
                     }
-                    that.sendMessage(userMentioned, 'You got a :ba-dum-tsss: from <@' + giverName + '>. I don\'t know what you said, but they thought it was funny.');
-                    that.sendMessage(giverName, 'You sent a :ba-dum-tsss: to <@' + userMentioned + '>');
+                    slack.sendMessage(userMentioned, 'You got a :ba-dum-tsss: from <@' + giverName + '>. I don\'t know what you said, but they thought it was funny.');
+                    slack.sendMessage(giverName, 'You sent a :ba-dum-tsss: to <@' + userMentioned + '>');
                 }
             }
 
@@ -313,8 +313,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     if (event.user === userMentioned) {
                         break;
                     }
-                    that.sendMessage(userMentioned, '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:');
-                    that.sendMessage(giverName, 'You sent some :tanks: to <@' + userMentioned + '>');
+                    slack.sendMessage(userMentioned, '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:');
+                    slack.sendMessage(giverName, 'You sent some :tanks: to <@' + userMentioned + '>');
                 }
             }
 
@@ -328,7 +328,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     var giveFailed = false;
 
                     if (burritosToDistribute > remainingCount) {
-                        that.sendMessage(user_who_reacted, 'You don\'t have enough burritos to give to everyone.');
+                        slack.sendMessage(user_who_reacted, 'You don\'t have enough burritos to give to everyone.');
                         return;
                     }
 
@@ -342,13 +342,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         }
 
                         if (user_who_reacted === userGivenBurrito) {
-                            that.sendMessage(user_who_reacted, 'You cannot give yourself a burrito.');
+                            slack.sendMessage(user_who_reacted, 'You cannot give yourself a burrito.');
                             giveFailed = true;
                             break;
                         }
 
                         if (remainingCount <= 0) {
-                            that.sendMessage(user_who_reacted, 'You are out of burritos to give today.');
+                            slack.sendMessage(user_who_reacted, 'You are out of burritos to give today.');
                             giveFailed = true;
                             break;
                         }
@@ -363,7 +363,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     }
 
                     var pluralize = burritosGiven === 1 ? ' burrito' : ' burritos';
-                    that.sendMessage(user_who_reacted, 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.');
+                    slack.sendMessage(user_who_reacted, 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.');
 
                     that.burriotsRecieved(userGivenBurrito).then(function(count) {
 
@@ -372,7 +372,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                             count = count * multiplier;
 
                             var pluralize = count === 1 ? ' burrito' : ' burritos';
-                            that.sendMessage('@' + userGivenBurrito, 'Hola, you recieved a burrito from <@' + user_who_reacted + '>. Overall you have ' + count + pluralize + '.');
+                            slack.sendMessage('@' + userGivenBurrito, 'Hola, you recieved a burrito from <@' + user_who_reacted + '>. Overall you have ' + count + pluralize + '.');
                         });
                     });
                 });
@@ -409,8 +409,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     if (event.user === userMentioned) {
                         break;
                     }
-                    that.sendMessage(userMentioned, 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.');
-                    that.sendMessage(giverName, 'You sent :bulbie: to <@' + userMentioned + '>');
+                    slack.sendMessage(userMentioned, 'You got a bulbie from <@' + giverName + '>, sadly it\'s not worth any burritos but it sure would make Ty happy.');
+                    slack.sendMessage(giverName, 'You sent :bulbie: to <@' + userMentioned + '>');
                 }
             }
 
@@ -425,8 +425,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         break;
                     }
 
-                    that.sendMessage(userMentioned, 'You got a :ba-dum-tsss: from <@' + giverName + '>. I don\'t know what you said, but they thought it was funny.');
-                    that.sendMessage(giverName, 'You sent a :ba-dum-tsss: to <@' + userMentioned + '>');
+                    slack.sendMessage(userMentioned, 'You got a :ba-dum-tsss: from <@' + giverName + '>. I don\'t know what you said, but they thought it was funny.');
+                    slack.sendMessage(giverName, 'You sent a :ba-dum-tsss: to <@' + userMentioned + '>');
                 }
             }
 
@@ -441,8 +441,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         break;
                     }
 
-                    that.sendMessage(userMentioned, '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:');
-                    that.sendMessage(giverName, 'You sent some :tanks: to <@' + userMentioned + '>');
+                    slack.sendMessage(userMentioned, '<@' + giverName + '> says \'tanks for all you do. :ba-dum-tsss:');
+                    slack.sendMessage(giverName, 'You sent some :tanks: to <@' + userMentioned + '>');
                 }
             }
 
@@ -451,7 +451,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 that.getBurritoMultiplier().then(function(multiplier) {
 
                     if (multiplier !== 1) {
-                        that.sendMessage(event.user, 'You\'re being too zealous, there is already a burrito multipler in play. Please wait for it to expire.');
+                        slack.sendMessage(event.user, 'You\'re being too zealous, there is already a burrito multipler in play. Please wait for it to expire.');
                         multiplierFailed = true;
                     } else {
 
@@ -461,10 +461,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                                 that.setBurritoMultiplier(event.user);
 
-                                that.sendMessage(event.channel, '<@' + event.user + '> has given burritos to all! Enjoy x5 burrito multipler for the next 12 hours.');
-                                that.sendMessage(event.user, 'You\'ve given burritos to all, you lost 15 burritos but probably gained some friends.');
+                                slack.sendMessage(event.channel, '<@' + event.user + '> has given burritos to all! Enjoy x5 burrito multipler for the next 12 hours.');
+                                slack.sendMessage(event.user, 'You\'ve given burritos to all, you lost 15 burritos but probably gained some friends.');
                             } else {
-                                that.sendMessage(event.user, 'I admire your support for your colleagues but you are a few burritos short to share your burritos with everyone.');
+                                slack.sendMessage(event.user, 'I admire your support for your colleagues but you are a few burritos short to share your burritos with everyone.');
                             }
                         });
                     }
@@ -484,14 +484,14 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                         var timeReminaing = Math.round(Math.abs(expireDate - new Date()) / 36e5);
 
-                        that.sendMessage(event.user, 'You have already used your burrito cannon, please wait '  + timeReminaing + ' hours for it to cool down.');
+                        slack.sendMessage(event.user, 'You have already used your burrito cannon, please wait '  + timeReminaing + ' hours for it to cool down.');
 
                         giveFailed = true;
                     } else if (usersGivenBurritos.length > 1 || !userGivenBurrito) {
-                        that.sendMessage(event.user, 'You can only burrito cannon one person every ' + burritoCannonCoolDownDays + '. Please limit your \'@\' to one  person.');
+                        slack.sendMessage(event.user, 'You can only burrito cannon one person every ' + burritoCannonCoolDownDays + '. Please limit your \'@\' to one  person.');
                         giveFailed = true;
                     } else if (event.user === userGivenBurrito) {
-                        that.sendMessage(event.user, 'You cannot give yourself a burrito cannon.');
+                        slack.sendMessage(event.user, 'You cannot give yourself a burrito cannon.');
                         giveFailed = true;
                     }
 
@@ -503,16 +503,16 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         burritoCannon(event.user, userGivenBurrito);
 
                         if (strippedMessage) {
-                            that.sendMessage(event.channel, '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + event.user + '> :burrito: :burrito: :cannon: \r\n' +
+                            slack.sendMessage(event.channel, '<@' + userGivenBurrito + '> has been burrito cannoned by <@' + event.user + '> :burrito: :burrito: :cannon: \r\n' +
                             ':celebrate: They say: \"' + strippedMessage + '\" :fiesta-parrot:');
                         }
-                        that.sendMessage(event.user, 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>.');
+                        slack.sendMessage(event.user, 'Hola, you gave a burrito cannon to <@' + userGivenBurrito + '>.');
 
                         that.burriotsRecieved(event.user).then(function(burritosReceived) {
 
                             let totalBurritos = burritosReceived > 0 ? burritosReceived : 0;
                             let burritoCannonVal = Math.round(burritoCannonBaseVal + (totalBurritos * .15));
-                            that.sendMessage('@' + userGivenBurrito, 'Holy guacamole, you recieved a burrito cannon from <@' + event.user + '>. ' +
+                            slack.sendMessage('@' + userGivenBurrito, 'Holy guacamole, you recieved a burrito cannon from <@' + event.user + '>. ' +
                             'You just gained ' + burritoCannonVal + ' burritos!');
                         });
                     }
@@ -529,7 +529,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     var giveFailed = false;
 
                     if (burritosToDistribute > remainingCount) {
-                        that.sendMessage(event.user, 'You don\'t have enough burritos to give to everyone.');
+                        slack.sendMessage(event.user, 'You don\'t have enough burritos to give to everyone.');
                         return;
                     }
 
@@ -543,13 +543,13 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                         }
 
                         if (event.user === userGivenBurrito) {
-                            that.sendMessage(event.user, 'You cannot give yourself a burrito.');
+                            slack.sendMessage(event.user, 'You cannot give yourself a burrito.');
                             giveFailed = true;
                             break;
                         }
 
                         if (remainingCount <= 0) {
-                            that.sendMessage(event.user, 'You are out of burritos to give today.');
+                            slack.sendMessage(event.user, 'You are out of burritos to give today.');
                             giveFailed = true;
                             break;
                         }
@@ -564,7 +564,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                     }
 
                     var pluralize = burritosGiven === 1 ? ' burrito' : ' burritos';
-                    that.sendMessage(event.user, 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.');
+                    slack.sendMessage(event.user, 'Hola, you gave ' + burritosGiven + pluralize + ' to <@' + userGivenBurrito + '>. You have ' + remainingCount + ' burritos left to give today.');
 
                     that.burriotsRecieved(userGivenBurrito).then(function(count) {
 
@@ -572,7 +572,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
                             count = count * multiplier;
                             var pluralize = count === 1 ? ' burrito' : ' burritos';
-                            that.sendMessage('@' + userGivenBurrito, 'Hola, you recieved a burrito from <@' + event.user + '>. Overall you have ' + count + pluralize + '.');
+                            slack.sendMessage('@' + userGivenBurrito, 'Hola, you recieved a burrito from <@' + event.user + '>. Overall you have ' + count + pluralize + '.');
                         });
                     });
                 });
@@ -580,10 +580,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.app.event('/burritostats', async ({ack, event, client}) => {
-        console.log("I just received /burritostats " + JSON.stringify(event));
-        
-        var requester = event.user_id;
+    slack.app.event('/burritostats', async ({command, ack, say}) => {
+        await ack();
         Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
             var burritosLeft = res[0];
@@ -591,13 +589,12 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var accountAgeInDays = res[2];
             var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
             var days = accountAgeInDays === 1 ? 'day' : 'days';
-            that.sendMessage(requester, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
+            slack.sendMessage(command.user_id, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
         });
         ack();
     });
 
     slack.app.command('/burritoboard', async ({command, ack, say}) => {
-        console.log(command)
         await ack();
         that.getBurritoBoard().then(function(res) {
 
@@ -610,21 +607,14 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 var pluralize = res[i].count === 1 ? ' burrito' : ' burritos';
                 output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + pluralize + '\r\n';
             }
-            slack.app.client.chat.postMessage({
-                channel: command.user_id,
-                text: output,
-                token: BOT_TOKEN
-            })
-            //say(output, {'response_type': 'ephemeral'});
+
+            slack.sendMessage(command.user_id, output);
         });
     });
     
-    slack.app.event('/burritocannonbuy', async ({ack, event, client}) => {
-        console.log("I just received /burritocannonbuy " + JSON.stringify(event));
-
-        var requester = event.user_id;
-        that.resetBurritoCannon(requester);
-        ack();
+    slack.app.event('/burritocannonbuy', async ({command, ack, say}) => {
+        await ack();
+        that.resetBurritoCannon(command.user_id);
     });
 
     (async () => {
