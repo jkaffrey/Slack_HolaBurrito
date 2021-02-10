@@ -611,16 +611,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 }
 
             }
-            say({
-                "blocks": [
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "New Paid Time Off request from <example.com|Fred Enriquez>\n\n<https://example.com|View request>"
-                        }
-                    }
-                ]
+            slack.app.client.chat.postMessage({
+                channel: command.user_id,
+                text: output,
+                token: BOT_TOKEN
             })
             //say(output, {'response_type': 'ephemeral'});
         });
