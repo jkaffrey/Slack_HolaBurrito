@@ -3,6 +3,7 @@ const mongodb = require('mongodb');
 const { App } = require('@slack/bolt');
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 const BOT_TOKEN = process.env.BOT_TOKEN;
+const APP_TOKEN = process.env.TOKEN;
 
 const PORT = process.env.PORT || 8080;
 const MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY;
@@ -22,6 +23,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     let slack = new App({
         signingSecret: SLACK_SIGNING_SECRET,
         token: BOT_TOKEN,
+        socketMode: true,
+        appToken: APP_TOKEN
     });
 
     let db = client.db('heroku_8k5h3x81')
