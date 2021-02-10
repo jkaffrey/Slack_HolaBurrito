@@ -5,6 +5,8 @@ const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const APP_TOKEN = process.env.TOKEN;
 
+let client;
+
 const PORT = process.env.PORT || 8080;
 const MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY;
 const MONGODB_URI=process.env.MONGODB_URI;
@@ -22,9 +24,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     // setting defaults for all Slack API calls
     let slack = new App({
         signingSecret: SLACK_SIGNING_SECRET,
-        token: BOT_TOKEN,
-        socketMode: true,
-        appToken: APP_TOKEN
+        token: BOT_TOKEN
     });
 
     let db = client.db('heroku_8k5h3x81')
@@ -628,7 +628,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     (async () => {
         // Start the app
-        const client = (await slack.start(PORT));
+        that.client = (await slack.start(PORT));
         console.log('Slack app is running!');
     })();
 });
