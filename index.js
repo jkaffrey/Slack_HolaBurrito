@@ -601,8 +601,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         await ack();
         that.getBurritoBoard().then(function(res) {
 
-            var entriesLength = (event.text === 'all') ? res.length : 5;
-            var boardText = (event.text === 'all') ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
+            var entriesLength = res.length;//(event.text === 'all') ? res.length : 5;
+            var boardText = ' Burrito Leaderboard For Everyone ';
 
             var output = ':burrito: ' + boardText + ' :burrito:\r\n';
             for (var i = 0; i < entriesLength ; i++) {
