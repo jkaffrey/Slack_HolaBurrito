@@ -263,7 +263,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         return outputUsers;
     }
     
-    chat.slack.app.event('reaction_added', ({event, client}) => {
+    slack.event('reaction_added', ({event, client}) => {
         console.log("I just received a reaction." + JSON.stringify(event));
         (async () => {
 
@@ -378,7 +378,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    chat.slack.app.event('message', ({event, client}) => {
+    slack.event('message', ({event, client}) => {
         console.log("I just received a reaction." + JSON.stringify(event));
         (async () => {
             var emoteType;
@@ -577,7 +577,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    chat.slack.app.event('/burritostats', ({event, client}) => {
+    slack.event('/burritostats', ({event, client}) => {
         (async () => {
             console.log("I just received /burritostats " + JSON.stringify(event));
             var requester = event.user_id;
@@ -593,7 +593,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    chat.slack.app.event('/burritoboard', ({event, client}) => {
+    slack.event('/burritoboard', ({event, client}) => {
         (async () => {
             console.log("I just received /burritoboard " + JSON.stringify(event));
 
@@ -614,7 +614,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
     
-    chat.slack.app.event('/burritocannonbuy', ({event, client}) => {
+    slack.event('/burritocannonbuy', ({event, client}) => {
         (async () => {
             console.log("I just received /burritocannonbuy " + JSON.stringify(event));
 
