@@ -379,8 +379,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.event('message', ({event, client}) => {
-        console.log("I just received a reaction." + JSON.stringify(event));
         (async () => {
+            console.log("Received message event");
+            console.log("I just received a reaction." + JSON.stringify(event));
             var emoteType;
             if (event.text && event.text.indexOf(':burrito:') > 0 && event.text.indexOf(':cannon:') > 0) {
                 emoteType = 'burritoCannon';
