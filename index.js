@@ -599,24 +599,22 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.app.command('/burritoboard', async ({ack, event, client}) => {
-        await ack();
-        (async () => {
-            console.log("I just received /burritoboard " + JSON.stringify(event));
-            var requester = event.user_id;
-            that.getBurritoBoard().then(function(res) {
+        ack();
+        console.log("I just received /burritoboard " + JSON.stringify(event));
+        var requester = event.user_id;
+        that.getBurritoBoard().then(function(res) {
 
-                var entriesLength = (event.text === 'all') ? res.length : 5;
-                var boardText = (event.text === 'all') ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
+            var entriesLength = (event.text === 'all') ? res.length : 5;
+            var boardText = (event.text === 'all') ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
 
-                var output = ':burrito: ' + boardText + ' :burrito:\r\n';
-                for (var i = 0; i < entriesLength ; i++) {
+            var output = ':burrito: ' + boardText + ' :burrito:\r\n';
+            for (var i = 0; i < entriesLength ; i++) {
 
-                    var pluralize = res[i].count === 1 ? ' burrito' : ' burritos';
-                    output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + pluralize + '\r\n';
-                }
-                that.sendMessage(requester, output);
-            });
-        })();
+                var pluralize = res[i].count === 1 ? ' burrito' : ' burritos';
+                output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + pluralize + '\r\n';
+            }
+            that.sendMessage(requester, output);
+        });
     });
     
     slack.app.event('/burritocannonbuy', ({ack, event, client}) => {
