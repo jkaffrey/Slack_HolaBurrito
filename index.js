@@ -596,7 +596,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         ack();
     });
 
-    slack.app.command('/burritoboard', async ({ack, event, client}) => {
+    slack.app.command('/burritoboard', ({ack, event, client}) => {
         console.log("I just received /burritoboard " + JSON.stringify(event));
         ack();
         var requester = event.user_id;
