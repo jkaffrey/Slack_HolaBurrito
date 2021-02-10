@@ -582,14 +582,20 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.app.command('/burritostats', async ({command, ack, say}) => {
         await ack();
-        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
+        const requester = command.user_id;
+        Promise.all([
+            that.burritosRemainingPerDay(requester), 
+            that.burriotsRecieved(requester), 
+            that.accountAge(requester)
+        ])
+        .then(function(res) {
 
             var burritosLeft = res[0];
             var totalBurritosRecieved = res[1];
             var accountAgeInDays = res[2];
             var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
             var days = accountAgeInDays === 1 ? 'day' : 'days';
-            slack.sendMessage(command.user_id, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + command.user_id + ')');
+            slack.sendMessage(requester, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
             res.resolve();
         });
     });
