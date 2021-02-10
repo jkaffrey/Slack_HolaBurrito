@@ -580,27 +580,25 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.app.event('/burritostats', ({ack, event, client}) => {
-        (async () => {
-            console.log("I just received /burritostats " + JSON.stringify(event));
-            ack();
+    slack.app.event('/burritostats', async ({ack, event, client}) => {
+        console.log("I just received /burritostats " + JSON.stringify(event));
+        
+        var requester = event.user_id;
+        Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
-            var requester = event.user_id;
-            Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
-
-                var burritosLeft = res[0];
-                var totalBurritosRecieved = res[1];
-                var accountAgeInDays = res[2];
-                var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
-                var days = accountAgeInDays === 1 ? 'day' : 'days';
-                that.sendMessage(requester, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
-            });
-        })();
+            var burritosLeft = res[0];
+            var totalBurritosRecieved = res[1];
+            var accountAgeInDays = res[2];
+            var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
+            var days = accountAgeInDays === 1 ? 'day' : 'days';
+            that.sendMessage(requester, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
+        });
+        ack();
     });
 
     slack.app.command('/burritoboard', async ({ack, event, client}) => {
-        ack();
         console.log("I just received /burritoboard " + JSON.stringify(event));
+        
         var requester = event.user_id;
         that.getBurritoBoard().then(function(res) {
 
@@ -615,16 +613,15 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             }
             that.sendMessage(requester, output);
         });
+        ack();
     });
     
-    slack.app.event('/burritocannonbuy', ({ack, event, client}) => {
-        (async () => {
-            console.log("I just received /burritocannonbuy " + JSON.stringify(event));
-            ack();
+    slack.app.event('/burritocannonbuy', async ({ack, event, client}) => {
+        console.log("I just received /burritocannonbuy " + JSON.stringify(event));
 
-            var requester = event.user_id;
-            that.resetBurritoCannon(requester);
-        })();
+        var requester = event.user_id;
+        that.resetBurritoCannon(requester);
+        ack();
     });
 
     (async () => {
