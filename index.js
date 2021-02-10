@@ -596,13 +596,9 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         ack();
     });
 
-    slack.app.command('/burritoboard', async ({event, ack, say, more}) => {
-        console.log("I just received /burritoboard " + event);
-        console.log("I just received /burritoboard " + ack);
-        console.log("I just received /burritoboard " + say);
-        console.log("I just received /burritoboard " + more);
+    slack.app.command('/burritoboard', async ({command, ack, say}) => {
+        console.log("I just received /burritoboard");
         await ack();
-        var requester = event.user_id;
         that.getBurritoBoard().then(function(res) {
 
             var entriesLength = (event.text === 'all') ? res.length : 5;
@@ -614,7 +610,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
                 var pluralize = res[i].count === 1 ? ' burrito' : ' burritos';
                 output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + pluralize + '\r\n';
             }
-            that.sendMessage(requester, output);
+            say(output);
         });
     });
     
