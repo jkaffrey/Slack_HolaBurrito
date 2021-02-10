@@ -825,7 +825,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.on('/burritostats', payload => {
-
+        console.log("I just received /burritostats " + JSON.stringify(payload));
         var requester = payload.user_id;
         Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
@@ -846,7 +846,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.on('/burritoboard', payload => {
-
+        console.log("I just received /burritoboard " + JSON.stringify(payload));
         var requester = payload.user_id;
         that.getBurritoBoard().then(function(res) {
 
@@ -872,7 +872,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.on('/burritocannonbuy', payload => {
-
+        console.log("I just received /burritocannonbuy " + JSON.stringify(payload));
         var requester = payload.user_id;
         that.resetBurritoCannon(requester);
     });
