@@ -623,6 +623,8 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    // incoming http requests
-    slack.listen(PORT);
+    (async () => {
+        // Start the app
+        const client = (await slack.start(PORT));
+    })();
 });
