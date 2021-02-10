@@ -601,15 +601,14 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         await ack();
         that.getBurritoBoard().then(function(res) {
 
-            var entriesLength = res.length;//(event.text === 'all') ? res.length : 5;
-            var boardText = ' Burrito Leaderboard (minimum 5) ';
+            var entriesLength = (command.text === 'all') ? res.length : 5;
+            var boardText = (command.text === 'all') ? ' Burrito Leaderboard For Everyone ' : ' Top 5 Burrito Earners ';
+
 
             var output = ':burrito: ' + boardText + ' :burrito:\r\n';
             for (var i = 0; i < entriesLength ; i++) {
-                if(res[i].count > 4) {
-                    output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + ' burritos\r\n';
-                }
-
+                var pluralize = res[i].count === 1 ? ' burrito' : ' burritos';
+                output += (i+1) + ') <@' + res[i].slackUser  + '> with ' + res[i].count + pluralize + '\r\n';
             }
             slack.app.client.chat.postMessage({
                 channel: command.user_id,
