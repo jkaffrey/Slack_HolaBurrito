@@ -591,7 +591,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var days = accountAgeInDays === 1 ? 'day' : 'days';
             slack.sendMessage(command.user_id, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
         });
-        ack();
     });
 
     slack.app.command('/burritoboard', async ({command, ack, say}) => {
