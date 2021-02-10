@@ -584,7 +584,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         (async () => {
             console.log("I just received /burritostats " + JSON.stringify(event));
             ack();
-            
+
             var requester = event.user_id;
             Promise.all([that.burritosRemainingPerDay(requester), that.burriotsRecieved(requester), that.accountAge(requester)]).then(function(res) {
 
@@ -598,11 +598,10 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         })();
     });
 
-    slack.app.event('/burritoboard', ({ack, event, client}) => {
+    slack.app.command('/burritoboard', async ({ack, event, client}) => {
+        await ack();
         (async () => {
             console.log("I just received /burritoboard " + JSON.stringify(event));
-            ack();
-
             var requester = event.user_id;
             that.getBurritoBoard().then(function(res) {
 
