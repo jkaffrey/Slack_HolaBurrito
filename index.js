@@ -9,6 +9,8 @@ const mongodb = require('mongodb'),
     MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY,
     MONGODB_URI=process.env.MONGODB_URI;
 
+    console.log(process.env.PORT)
+
 // setting defaults for all Slack API calls
 let slack = new App({
     signingSecret: SLACK_SIGNING_SECRET,
