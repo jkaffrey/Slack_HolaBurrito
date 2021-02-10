@@ -1,17 +1,17 @@
 require('dotenv').config();
 const mongodb = require('mongodb'),
+    ts = require('tinyspeck'),
     fs = require('fs'),
     PORT = process.env.PORT || 8080,
     BOT_TOKEN = process.env.BOT_TOKEN,
     TOKEN = process.env.TOKEN,
     REQUEST_URL =  process.env.REQUEST_URL,
     MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY,
-    MONGODB_USER=process.env.MONGODB_USER,
-    MONGODB_PASS=process.env.MONGODB_PASS;
+    MONGODB_URI=process.env.MONGODB_URI;
 
 // setting defaults for all Slack API calls
 let slack = ts.instance({ token: BOT_TOKEN });
-let uri = encodeURI('');  
+let uri = encodeURI(MONGODB_URI);  
 const USERNAME = 'Hola Burrito';
 
 mongodb.MongoClient.connect(uri, function(err, client) {
