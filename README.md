@@ -24,7 +24,7 @@ In Slack Goto > System and Administration > Manage Apps
 Click *Build* in top right corner
 Click *Create New App*
 
-Bot User OAuth Access Token - Get from OAuth & Permissions Page
+Bot User OAuth Access Token - Get from OAuth & Permissions Page - Install App to see this
 Slack Signing Secret - Get from Basic Information Page
 
 Basic Information -> Name your bot
@@ -67,3 +67,5 @@ Slash Commands
 * /burritoboard -> https://holaburrito.herokuapp.com/slack/events
 * /burritocannonbuy -> https://holaburrito.herokuapp.com/slack/events
 * /burritostats -> https://holaburrito.herokuapp.com/slack/events
+
+You will need to have the heroku server running in order to setup the *Event Subscriptions* section.
