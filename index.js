@@ -3,15 +3,16 @@ const mongodb = require('mongodb');
 const { App } = require('@slack/bolt');
 const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 const BOT_TOKEN = process.env.BOT_TOKEN;
-const APP_TOKEN = process.env.TOKEN;
 
 let slack = {}
 
 const PORT = process.env.PORT || 8080;
 const MAX_BURRITOS_PER_DAY = process.env.MAX_BURRITOS_PER_DAY;
 const MONGODB_URI=process.env.MONGODB_URI;
+const MONGODB_USER=process.env.MONGODB_USER;
+const MONGODB_PASS=process.env.MONGODB_PASS;
 
-let uri = encodeURI(MONGODB_URI);
+let uri = encodeURI('mongodb+srv://' + MONGODB_USER + ':' + MONGODB_PASS + '@' + MONGODB_URI);
 
 mongodb.MongoClient.connect(uri, function(err, client) {
 
