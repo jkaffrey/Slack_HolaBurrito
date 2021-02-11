@@ -595,7 +595,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
             var accountAgeInDays = res[2];
             var pluralize = totalBurritosRecieved === 1 ? ' burrito' : ' burritos';
             var days = accountAgeInDays === 1 ? 'day' : 'days';
-            slack.sendMessage(requester, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. (' + requester + ')');
+            slack.sendMessage(requester, 'You have ' + burritosLeft + ' burritos left to give today. You have recieved ' + totalBurritosRecieved + ' ' + pluralize + ' over the course of ' + accountAgeInDays +  ' ' + days + '. ( Slack UserID:' + requester + ' )');
             res.resolve();
         });
     });
