@@ -381,6 +381,7 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     });
 
     slack.app.event('message', ({event, client}) => {
+        console.log("Received Message");
         (async () => {
             var emoteType;
             if (event.text && event.text.indexOf(':burrito:') > 0 && event.text.indexOf(':cannon:') > 0) {
