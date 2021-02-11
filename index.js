@@ -44,11 +44,11 @@ mongodb.MongoClient.connect(uri, function(err, client) {
         (async () => {
             try {
               // Use the `chat.postMessage` method to send a message from this app
-              console.log(await slack.app.client.chat.postMessage({
+              await slack.app.client.chat.postMessage({
                 channel: channel,
                 text: message,
                 token: BOT_TOKEN
-              }));
+              });
             } catch (error) {
               console.log(error);
             }
@@ -267,7 +267,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
     }
     
     slack.app.event('reaction_added', ({event, client}) => {
-        console.log("I just received a reaction." + JSON.stringify(event));
         (async () => {
 
             var user_who_reacted = event.user;
@@ -383,8 +382,6 @@ mongodb.MongoClient.connect(uri, function(err, client) {
 
     slack.app.event('message', ({event, client}) => {
         (async () => {
-            console.log("Received message event");
-            console.log("I just received a reaction." + JSON.stringify(event));
             var emoteType;
             if (event.text && event.text.indexOf(':burrito:') > 0 && event.text.indexOf(':cannon:') > 0) {
                 emoteType = 'burritoCannon';
