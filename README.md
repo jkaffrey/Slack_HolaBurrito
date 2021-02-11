@@ -6,12 +6,12 @@ Gather the following
 
 Setup Heroku
 
-BOT_TOKEN=xxx
-SLACK_SIGNING_SECRET=xxx
-MONGODB_USER=holaBurrito
-MONGODB_PASS=xxx
-MONGODB_URI=YOURMONGOPREFIX.kxxky.mongodb.net/THEDEBNAME?retryWrites=true&w=majority
-MAX_BURRITOS_PER_DAY=7
+* BOT_TOKEN=xxx
+* SLACK_SIGNING_SECRET=xxx
+* MONGODB_USER=holaBurrito
+* MONGODB_PASS=xxx
+* MONGODB_URI=YOURMONGOPREFIX.kxxky.mongodb.net/THEDEBNAME?retryWrites=true&w=majority
+* MAX_BURRITOS_PER_DAY=7
 
 Add them to your Heroku Config Vars
 
